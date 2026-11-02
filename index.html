@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saurabh Kumar — Electrical Engineering, Automation & Proof of Work Portfolio</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            paper: {
+              50: '#FAF8F5',
+              100: '#F3EFEA',
+              200: '#E6E0D6',
+              800: '#1C1B18',
+              900: '#11110F',
+              950: '#0A0A09'
+            },
+            accent: {
+              amber: '#D97706',
+              emerald: '#059669',
+              cobalt: '#2563EB'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --bg-primary: #FAF8F5;
+      --bg-elevated: #FFFFFF;
+      --bg-subtle: #F3EFEA;
+      --text-primary: #11110F;
+      --text-secondary: #57534E;
+      --text-muted: #78716C;
+      --border-hairline: #E6E0D6;
+      --accent-main: #D97706;
+    }
+    html.dark {
+      --bg-primary: #0B0B0A;
+      --bg-elevated: #141412;
+      --bg-subtle: #1C1B18;
+      --text-primary: #F5F3EF;
+      --text-secondary: #A8A29E;
+      --text-muted: #78716C;
+      --border-hairline: #262522;
+      --accent-main: #F59E0B;
+    }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+    .hairline-border {
+      border-color: var(--border-hairline);
+    }
+    .surface-card {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .surface-card:hover {
+      border-color: var(--text-muted);
+    }
+    .surface-subtle {
+      background-color: var(--bg-subtle);
+    }
+    .ruler-tick {
+      background-image: repeating-linear-gradient(
+        to right,
+        var(--border-hairline) 0px,
+        var(--border-hairline) 1px,
+        transparent 1px,
+        transparent 24px
+      );
+    }
+    .pulse-dot {
+      animation: pulseRing 2s infinite;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.9; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.9; }
+    }
+    /* Custom minimalist scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-hairline);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-amber-500/20 selection:text-amber-600 dark:selection:text-amber-400">
+
+  <!-- TOP TELEMETRY & TIMECODE RULER (Inspired by sudhanshu.me timeline strip) -->
+  <div class="w-full border-b hairline-border bg-white/60 dark:bg-zinc-950/80 backdrop-blur-md text-[11px] font-mono tracking-tight text-stone-500 dark:text-stone-400">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-8 flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          SYS.ONLINE
+        </span>
+        <span class="text-stone-300 dark:text-stone-700">|</span>
+        <span>GRID: 400kV EHV · 50.00Hz</span>
+        <span class="hidden sm:inline text-stone-300 dark:text-stone-700">|</span>
+        <span class="hidden sm:inline">PLC: GX-WORKS2 RUN</span>
+        <span class="hidden md:inline text-stone-300 dark:text-stone-700">|</span>
+        <span class="hidden md:inline">IOT: ESP32 TELEMETRY</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="telemetry-clock" class="tabular-nums">IST 00:00:00:00</span>
+        <span class="text-stone-300 dark:text-stone-700">|</span>
+        <span class="text-amber-600 dark:text-amber-400 font-medium">MMMUT ’27 · EE</span>
+      </div>
+    </div>
+    <div class="h-1.5 w-full ruler-tick opacity-60"></div>
+  </div>
+
+  <!-- STICKY MINIMALIST HEADER -->
+  <header class="sticky top-0 z-30 border-b hairline-border bg-[#FAF8F5]/90 dark:bg-[#0B0B0A]/90 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-3">
+        <button id="brand-home-btn" type="button" class="text-left group focus:outline-none">
+          <div class="flex items-baseline gap-2">
+            <span class="font-semibold tracking-tight text-base sm:text-lg" id="nav-name">Saurabh Kumar</span>
+            <span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-stone-200/80 dark:bg-stone-800 text-stone-600 dark:text-stone-300">B.Tech EE</span>
+          </div>
+          <p class="text-[11px] font-mono text-stone-500 dark:text-stone-400 hidden sm:block">Gorakhpur, UP · Working Across India &amp; Remote</p>
+        </button>
+      </div>
+
+      <!-- Primary Navigation -->
+      <nav class="hidden lg:flex items-center gap-1 text-xs font-medium text-stone-600 dark:text-stone-300">
+        <button type="button" data-scroll="section-proof" class="nav-scroll-btn px-3 py-1.5 rounded-md hover:bg-stone-200/60 dark:hover:bg-stone-800/70 transition">Proof &amp; Numbers</button>
+        <button type="button" data-scroll="section-work" class="nav-scroll-btn px-3 py-1.5 rounded-md hover:bg-stone-200/60 dark:hover:bg-stone-800/70 transition">Experience</button>
+        <button type="button" data-scroll="section-projects" class="nav-scroll-btn px-3 py-1.5 rounded-md hover:bg-stone-200/60 dark:hover:bg-stone-800/70 transition">Projects</button>
+        <button type="button" data-scroll="section-lab" class="nav-scroll-btn px-3 py-1.5 rounded-md hover:bg-stone-200/60 dark:hover:bg-stone-800/70 transition flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>System Lab
+        </button>
+        <button type="button" data-scroll="section-skills" class="nav-scroll-btn px-3 py-1.5 rounded-md hover:bg-stone-200/60 dark:hover:bg-stone-800/70 transition">Skills &amp; Certs</button>
+        <button type="button" data-scroll="section-process" class="nav-scroll-btn px-3 py-1.5 rounded-md hover:bg-stone-200/60 dark:hover:bg-stone-800/70 transition">How I Work</button>
+      </nav>
+
+      <!-- Utility Controls: Theme + Journey CMS + Contact -->
+      <div class="flex items-center gap-2">
+        <button id="open-cms-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 transition" title="Add or update your experience, projects, and skills">
+          <span>+ Update Journey</span>
+          <span class="hidden sm:inline-block px-1 py-0.2 text-[10px] rounded bg-amber-500/20">CMS</span>
+        </button>
+
+        <button id="theme-toggle-btn" type="button" class="p-2 rounded-lg border hairline-border hover:bg-stone-200/50 dark:hover:bg-stone-800 transition text-stone-600 dark:text-stone-300" aria-label="Toggle color theme" title="Toggle Light/Dark Minimalist Theme">
+          <svg id="theme-icon-dark" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+          <svg id="theme-icon-light" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button type="button" data-scroll="section-contact" class="nav-scroll-btn hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-50 dark:bg-stone-100 dark:text-stone-900 hover:opacity-90 transition">
+          <span>Contact</span>
+          <span class="font-mono text-[10px]">→</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
+
+    <!-- HERO SECTION + PRACTICE LENS SWITCHER (Inspired by sudhanshu.me "Two practices · One editor") -->
+    <section class="pt-10 sm:pt-16 pb-12 border-b hairline-border">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full surface-subtle border hairline-border text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span id="hero-availability">Open for Core Electrical, PLC Automation &amp; IoT Engineering Roles · 2027 Batch</span>
+        </div>
+        <div class="font-mono text-xs text-stone-500 dark:text-stone-400">
+          Roll No. <span id="hero-roll" class="text-stone-800 dark:text-stone-200 font-medium">2023031062</span> · MMMUT Gorakhpur
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+        <div class="lg:col-span-8 space-y-5">
+          <p class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400" id="active-lens-kicker">
+            THREE PRACTICES · ONE ENGINEER — PICK A LENS &amp; THE SITE CUTS TO IT
+          </p>
+          <h1 class="text-4xl sm:text-6xl font-normal tracking-tight leading-[1.06]" id="hero-headline">
+            Engineering systems judged by <span class="font-serif italic text-amber-600 dark:text-amber-400">reliability</span>. Stories judged by <span class="font-serif italic">retention</span>.
+          </h1>
+          <p class="text-base sm:text-lg text-stone-600 dark:text-stone-300 max-w-2xl leading-relaxed" id="hero-summary">
+            I’m <strong class="font-semibold text-stone-900 dark:text-stone-100">Saurabh Kumar</strong>, an Electrical Engineering undergraduate at Madan Mohan Malaviya University of Technology. I ask what fault needs eliminating—or what metric needs moving—before I wire the relay, write the Ladder Logic, or draft the script.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <button type="button" data-scroll="section-work" class="nav-scroll-btn px-5 py-2.5 rounded-lg text-xs sm:text-sm font-medium bg-stone-900 text-stone-50 dark:bg-stone-100 dark:text-stone-900 hover:opacity-90 transition inline-flex items-center gap-2">
+              <span>See Proof of Work</span>
+              <span class="font-mono">↓</span>
+            </button>
+            <button type="button" data-scroll="section-lab" class="nav-scroll-btn px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium surface-card hover:bg-stone-100 dark:hover:bg-stone-800/60 transition inline-flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span>Launch Interactive System Lab</span>
+            </button>
+            <button type="button" id="hero-add-journey-btn" class="px-4 py-2.5 rounded-lg text-xs sm:text-sm font-mono text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white border hairline-border transition">
+              + Add New Milestone
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Identity & Direct Credentials Card -->
+        <div class="lg:col-span-4 surface-card rounded-xl p-5 space-y-4">
+          <div class="flex items-start justify-between gap-3 border-b hairline-border pb-3.5">
+            <div>
+              <div class="font-mono text-[11px] uppercase tracking-wider text-stone-400">Verified Candidate Brief</div>
+              <div class="font-semibold text-base mt-0.5" id="card-name">Saurabh Kumar</div>
+              <div class="text-xs text-stone-500 dark:text-stone-400" id="card-degree">B.Tech — Electrical Engineering (2023–2027)</div>
+            </div>
+            <span class="font-mono text-xs px-2 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              CGPA <span id="card-cgpa">7.01</span>
+            </span>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center justify-between py-1 border-b hairline-border">
+              <span class="text-stone-500 dark:text-stone-400 font-mono">Industrial PLC</span>
+              <span class="font-medium text-right">Maruti Suzuki (Paint Shop)</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b hairline-border">
+              <span class="text-stone-500 dark:text-stone-400 font-mono">Power Transmission</span>
+              <span class="font-medium text-right">UPPTCL (400 kV Substation)</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b hairline-border">
+              <span class="text-stone-500 dark:text-stone-400 font-mono">Embedded &amp; EV</span>
+              <span class="font-medium text-right">ESP32 IoT · Solar-EV V2G</span>
+            </div>
+            <div class="flex items-center justify-between py-1">
+              <span class="text-stone-500 dark:text-stone-400 font-mono">Content Impact</span>
+              <span class="font-medium text-right">200 → 100K+ Subs (4M+ Views)</span>
+            </div>
+          </div>
+
+          <div class="pt-1 flex flex-wrap gap-2 text-xs font-mono">
+            <a id="card-linkedin" href="https://www.linkedin.com/in/saurabh-kumar-737232145" target="_blank" rel="noopener noreferrer" class="flex-1 text-center py-2 px-3 rounded-lg surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+              LinkedIn ↗
+            </a>
+            <a id="card-email" href="mailto:Saurabhkushwaha7991@gmail.com" class="flex-1 text-center py-2 px-3 rounded-lg surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+              Email ↗
+            </a>
+            <button type="button" id="copy-phone-btn" class="py-2 px-3 rounded-lg surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 transition" title="Copy phone number">
+              +91-7991358918
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRACTICE SWITCHER BAR ("Pick a practice and the site cuts to it") -->
+      <div class="mt-10 pt-8 border-t hairline-border">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div class="font-mono text-xs uppercase tracking-wider text-stone-500 dark:text-stone-400">
+            Select Practice Lens — Filters Proof Numbers, Experience &amp; Projects
+          </div>
+          <div class="font-mono text-xs text-stone-400" id="lens-status-label">
+            Showing: All Practices (Unified Proof of Work)
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="practice-switcher">
+          <button type="button" data-lens="all" class="lens-btn text-left p-4 rounded-xl surface-card ring-2 ring-amber-500/80 transition">
+            <div class="flex items-center justify-between font-mono text-xs text-amber-600 dark:text-amber-400 mb-1">
+              <span>00 / UNIFIED</span>
+              <span>ALL WORK</span>
+            </div>
+            <div class="font-semibold text-sm">Complete Portfolio</div>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 line-clamp-2">All internships, embedded IoT builds, EV power studies, and content scale.</p>
+          </button>
+
+          <button type="button" data-lens="industrial" class="lens-btn text-left p-4 rounded-xl surface-card hover:border-stone-400 transition">
+            <div class="flex items-center justify-between font-mono text-xs text-stone-400 mb-1">
+              <span>01 / CORE EE &amp; PLC</span>
+              <span>PLANT &amp; GRID</span>
+            </div>
+            <div class="font-semibold text-sm">Industrial &amp; Power Systems</div>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 line-clamp-2">Mitsubishi GX Works2 PLC, VFDs, Maruti Suzuki Paint Shop PM &amp; 400kV UPPTCL Substation.</p>
+          </button>
+
+          <button type="button" data-lens="embedded" class="lens-btn text-left p-4 rounded-xl surface-card hover:border-stone-400 transition">
+            <div class="flex items-center justify-between font-mono text-xs text-stone-400 mb-1">
+              <span>02 / IOT &amp; CLEAN TECH</span>
+              <span>HARDWARE + CODE</span>
+            </div>
+            <div class="font-semibold text-sm">Embedded IoT &amp; EV Energy</div>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 line-clamp-2">ESP32 5-sensor hydroponics automation, Blynk telemetry, Solar PV MPPT &amp; V2G EVSE.</p>
+          </button>
+
+          <button type="button" data-lens="content" class="lens-btn text-left p-4 rounded-xl surface-card hover:border-stone-400 transition">
+            <div class="flex items-center justify-between font-mono text-xs text-stone-400 mb-1">
+              <span>03 / STORYTELLING</span>
+              <span>AUDIENCE SCALE</span>
+            </div>
+            <div class="font-semibold text-sm">Technical &amp; Finance Writing</div>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-1 line-clamp-2">Financially Free scripts scaling 200 → 100K+ subscribers and 4M+ high-retention views.</p>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROOF OF WORK SCOREBOARD ("Work judged by the dashboard") -->
+    <section id="section-proof" class="py-12 border-b hairline-border">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">01 // Proof by the Numbers</span>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Measured outcomes across plant floors, substations &amp; media</h2>
+        </div>
+        <p class="text-xs font-mono text-stone-500 dark:text-stone-400">Click any metric to highlight its underlying proof</p>
+      </div>
+
+      <div id="metrics-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <!-- Populated dynamically via JS from PORTFOLIO_DATA -->
+      </div>
+
+      <!-- Organizations / Institutions Strip -->
+      <div class="mt-6 pt-5 border-t hairline-border flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-stone-500 dark:text-stone-400">
+        <span class="uppercase tracking-wider">Organizations &amp; Credentials //</span>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-stone-700 dark:text-stone-300 font-medium">
+          <span>Maruti Suzuki India Ltd.</span>
+          <span>·</span>
+          <span>UPPTCL (400 kV EHV)</span>
+          <span>·</span>
+          <span>Financially Free</span>
+          <span>·</span>
+          <span>MMMUT Gorakhpur</span>
+          <span>·</span>
+          <span>MathWorks MATLAB</span>
+          <span>·</span>
+          <span>TCS iON</span>
+          <span>·</span>
+          <span>National Cadet Corps (NCC)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE / PROFESSIONAL JOURNEY SECTION -->
+    <section id="section-work" class="py-14 border-b hairline-border">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">02 // Professional Journey</span>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Experience, filed by the engineering &amp; business problem solved</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="add-exp-QuickBtn" class="px-3 py-1.5 rounded-lg text-xs font-mono border hairline-border hover:bg-stone-200/60 dark:hover:bg-stone-800 transition">
+            + Add Experience
+          </button>
+        </div>
+      </div>
+
+      <div id="experience-list" class="space-y-4">
+        <!-- Populated via JS -->
+      </div>
+    </section>
+
+    <!-- PROJECTS & TECHNICAL PROOF SECTION -->
+    <section id="section-projects" class="py-14 border-b hairline-border">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">03 // Engineered Systems &amp; Studies</span>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Hardware automation &amp; clean-energy architectures</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="add-proj-QuickBtn" class="px-3 py-1.5 rounded-lg text-xs font-mono border hairline-border hover:bg-stone-200/60 dark:hover:bg-stone-800 transition">
+            + Add Project
+          </button>
+        </div>
+      </div>
+
+      <div id="projects-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Populated via JS -->
+      </div>
+    </section>
+
+    <!-- INTERACTIVE ENGINEERING SYSTEM LAB (Interactive Proof of Knowledge) -->
+    <section id="section-lab" class="py-14 border-b hairline-border">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+        <div>
+          <div class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>04 // Interactive Proof-of-Knowledge Lab</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Test my systems live in the browser</h2>
+          <p class="text-sm text-stone-600 dark:text-stone-400 mt-1 max-w-2xl">
+            Instead of static bullet points, interact directly with the control architectures from my projects and internships: adjust environmental sensors, inspect EV power flow stages, or toggle PLC Ladder Logic rungs.
+          </p>
+        </div>
+
+        <!-- Lab Simulator Selector Tabs -->
+        <div class="inline-flex p-1 rounded-xl surface-subtle border hairline-border text-xs font-mono self-start">
+          <button type="button" data-sim="hydro" class="sim-tab-btn px-3 py-2 rounded-lg bg-white dark:bg-stone-900 shadow-sm font-medium text-stone-900 dark:text-stone-100 transition">
+            01 ESP32 Hydroponics
+          </button>
+          <button type="button" data-sim="ev" class="sim-tab-btn px-3 py-2 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition">
+            02 Solar-EV &amp; V2G EMS
+          </button>
+          <button type="button" data-sim="plc" class="sim-tab-btn px-3 py-2 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition">
+            03 PLC Ladder Logic
+          </button>
+        </div>
+      </div>
+
+      <!-- SIMULATOR 1: ESP32 SAFFRON HYDROPONICS & 4-CHANNEL RELAY CONTROLLER -->
+      <div id="sim-panel-hydro" class="sim-panel surface-card rounded-2xl p-5 sm:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b hairline-border">
+          <div>
+            <span class="font-mono text-[11px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400">ESP32 + Arduino IDE + Blynk IoT</span>
+            <h3 class="text-lg font-semibold">Smart Hydroponics Saffron Cultivation — Sensor-to-Relay Threshold Simulator</h3>
+          </div>
+          <button type="button" id="hydro-preset-btn" class="px-3 py-1.5 rounded-lg text-xs font-mono surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+            Simulate Heat &amp; Dry Spike ⚡
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Left: 5 Environmental Sensors Input -->
+          <div class="lg:col-span-5 space-y-4 surface-subtle p-4 rounded-xl border hairline-border">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-semibold uppercase tracking-wider">1. Sensor Array Inputs (5 Channels)</span>
+              <span class="font-mono text-[11px] text-stone-500">ADC / Digital Read</span>
+            </div>
+
+            <!-- DHT11 Temp -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sim-temp" class="font-medium">DHT11 Temperature <span class="text-stone-400 font-mono">(Threshold &gt; 24°C)</span></label>
+                <span id="val-temp" class="font-mono font-semibold text-amber-600 dark:text-amber-400">26°C</span>
+              </div>
+              <input id="sim-temp" type="range" min="10" max="40" value="26" class="w-full accent-amber-600 cursor-pointer" />
+            </div>
+
+            <!-- Soil Moisture -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sim-moisture" class="font-medium">Soil / Root-Zone Moisture <span class="text-stone-400 font-mono">(Pump &lt; 55%)</span></label>
+                <span id="val-moisture" class="font-mono font-semibold text-emerald-600 dark:text-emerald-400">42%</span>
+              </div>
+              <input id="sim-moisture" type="range" min="10" max="95" value="42" class="w-full accent-emerald-600 cursor-pointer" />
+            </div>
+
+            <!-- LDR Light Intensity -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sim-light" class="font-medium">LDR Ambient Light <span class="text-stone-400 font-mono">(Grow Light &lt; 450 lx)</span></label>
+                <span id="val-light" class="font-mono font-semibold text-blue-600 dark:text-blue-400">320 lx</span>
+              </div>
+              <input id="sim-light" type="range" min="50" max="1000" step="10" value="320" class="w-full accent-blue-600 cursor-pointer" />
+            </div>
+
+            <!-- DHT11 Humidity -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sim-humidity" class="font-medium">DHT11 Relative Humidity <span class="text-stone-400 font-mono">(Humidifier &lt; 60%)</span></label>
+                <span id="val-humidity" class="font-mono font-semibold text-purple-600 dark:text-purple-400">52%</span>
+              </div>
+              <input id="sim-humidity" type="range" min="20" max="95" value="52" class="w-full accent-purple-600 cursor-pointer" />
+            </div>
+
+            <!-- MQ135 Air Quality & Rain Sensor -->
+            <div class="pt-2 border-t hairline-border flex items-center justify-between gap-4">
+              <div>
+                <div class="text-xs font-medium">MQ135 Air Quality: <span id="val-aqi" class="font-mono text-emerald-600 dark:text-emerald-400">135 PPM (Optimal)</span></div>
+                <div class="text-[11px] text-stone-500">Triggers exhaust ventilation if &gt; 350 PPM</div>
+              </div>
+              <button type="button" id="toggle-aqi-btn" class="px-2.5 py-1 rounded text-xs font-mono border hairline-border hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                Spike CO₂/VOC
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: 4-Channel Relay States + 16x2 LCD & Blynk Dashboard -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="relay-cards-container">
+              <!-- Populated dynamically by updateHydroSim() -->
+            </div>
+
+            <!-- Simulated 16x2 LCD & Blynk Wi-Fi Status -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div class="p-4 rounded-xl bg-[#16281E] text-[#6EE7B7] font-mono text-xs border border-emerald-500/30 shadow-inner">
+                <div class="flex items-center justify-between text-[10px] text-emerald-400/70 mb-1.5">
+                  <span>16×2 I2C LCD INTERFACE</span>
+                  <span>ADDR: 0x27</span>
+                </div>
+                <div id="lcd-line-1" class="tracking-widest bg-black/30 px-2 py-1 rounded">T:26C H:52% M:42%</div>
+                <div id="lcd-line-2" class="tracking-widest bg-black/30 px-2 py-1 rounded mt-1">RLY: F:1 P:1 L:1 U:1</div>
+              </div>
+
+              <div class="p-4 rounded-xl surface-subtle border hairline-border flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono text-[11px] font-semibold uppercase">Blynk IoT Cloud Sync</span>
+                  <span class="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Wi-Fi Connected
+                  </span>
+                </div>
+                <p class="text-xs text-stone-600 dark:text-stone-400 my-1.5" id="blynk-status-msg">
+                  ESP32 publishing virtual pins V0–V5 every 2000ms. Manual override available on mobile dashboard.
+                </p>
+                <div class="flex items-center gap-2">
+                  <button type="button" id="hydro-override-btn" class="text-[11px] font-mono px-2.5 py-1 rounded border hairline-border hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                    Mode: AUTO THRESHOLD
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMULATOR 2: SOLAR-POWERED EV CHARGING & V2G ARCHITECTURE -->
+      <div id="sim-panel-ev" class="sim-panel hidden surface-card rounded-2xl p-5 sm:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b hairline-border">
+          <div>
+            <span class="font-mono text-[11px] uppercase tracking-wider text-amber-600 dark:text-amber-400">FAME-II Clean Mobility Seminar Study</span>
+            <h3 class="text-lg font-semibold">Solar PV → MPPT → LFP Battery → EVSE &amp; V2G Peak-Shaving Architecture</h3>
+          </div>
+          <div class="inline-flex rounded-lg surface-subtle p-1 border hairline-border text-xs font-mono">
+            <button type="button" data-evmode="solar" class="ev-mode-btn px-2.5 py-1 rounded bg-white dark:bg-stone-900 font-medium shadow-sm">Daylight Solar Charge</button>
+            <button type="button" data-evmode="v2g" class="ev-mode-btn px-2.5 py-1 rounded text-stone-500 hover:text-stone-900 dark:hover:text-white">Evening V2G Peak Shaving</button>
+          </div>
+        </div>
+
+        <!-- Interactive 6-Stage Energy Flow Chain -->
+        <p class="text-xs font-mono text-stone-500 dark:text-stone-400 mb-3">Click any stage in the energy conversion chain to inspect engineering specs:</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-6" id="ev-stages-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Selected Stage Technical Inspector -->
+        <div id="ev-stage-detail" class="p-5 rounded-xl surface-subtle border hairline-border grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- SIMULATOR 3: MARUTI SUZUKI PAINT SHOP PLC LADDER LOGIC & CONVEYOR DIAGNOSTICS -->
+      <div id="sim-panel-plc" class="sim-panel hidden surface-card rounded-2xl p-5 sm:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b hairline-border">
+          <div>
+            <span class="font-mono text-[11px] uppercase tracking-wider text-blue-600 dark:text-blue-400">Mitsubishi GX Works2 · Industrial Automation</span>
+            <h3 class="text-lg font-semibold">Paint Shop Conveyor Interlock — Interactive Ladder Logic Rung</h3>
+          </div>
+          <span class="font-mono text-xs px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" id="plc-run-badge">
+            OUTPUT Y010: ENERGIZED (VFD RUN)
+          </span>
+        </div>
+
+        <p class="text-xs text-stone-600 dark:text-stone-400 mb-4">
+          Toggle the field input contacts (<code class="font-mono">X001</code> Skid Sensor, <code class="font-mono">X002</code> Safety Gate, <code class="font-mono">X003</code> VFD Thermal OK, <code class="font-mono">X004</code> E-Stop NC) to simulate fault troubleshooting across plant production equipment:
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <button type="button" data-plc="x1" class="plc-input-btn p-3 rounded-xl border hairline-border text-left transition surface-subtle">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span>X001 (NO)</span>
+              <span id="plc-state-x1" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">CLOSED (1)</span>
+            </div>
+            <div class="font-medium text-xs mt-1">Body Skid Photo-Sensor</div>
+          </button>
+
+          <button type="button" data-plc="x2" class="plc-input-btn p-3 rounded-xl border hairline-border text-left transition surface-subtle">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span>X002 (NO)</span>
+              <span id="plc-state-x2" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">CLOSED (1)</span>
+            </div>
+            <div class="font-medium text-xs mt-1">Booth Safety Interlock</div>
+          </button>
+
+          <button type="button" data-plc="x3" class="plc-input-btn p-3 rounded-xl border hairline-border text-left transition surface-subtle">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span>X003 (NO)</span>
+              <span id="plc-state-x3" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">CLOSED (1)</span>
+            </div>
+            <div class="font-medium text-xs mt-1">VFD Inverter Healthy</div>
+          </button>
+
+          <button type="button" data-plc="x4" class="plc-input-btn p-3 rounded-xl border hairline-border text-left transition surface-subtle">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span>X004 (NC)</span>
+              <span id="plc-state-x4" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">NORMAL (1)</span>
+            </div>
+            <div class="font-medium text-xs mt-1">Emergency Stop Loop</div>
+          </button>
+        </div>
+
+        <!-- Visual Ladder Diagram Rung -->
+        <div class="p-4 sm:p-5 rounded-xl bg-stone-900 text-stone-100 font-mono text-xs overflow-x-auto">
+          <div class="text-[11px] text-stone-400 mb-3 flex justify-between">
+            <span>GX WORKS2 LADDER MONITOR // RUNG 0014 — PAINT SHOP CONVEYOR DRIVE</span>
+            <span id="plc-diagnostic-text" class="text-emerald-400">STATUS: ALL INTERLOCKS HEALTHY → CONVEYOR RUNNING</span>
+          </div>
+          <div id="plc-ladder-ascii" class="py-3 text-xs sm:text-sm tracking-wide whitespace-pre"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS, INTERESTS & VERIFIED CERTIFICATIONS -->
+    <section id="section-skills" class="py-14 border-b hairline-border">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">05 // Technical Stack &amp; Credentials</span>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Skills, core electrical domains &amp; verified certificates</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="add-skill-QuickBtn" class="px-3 py-1.5 rounded-lg text-xs font-mono border hairline-border hover:bg-stone-200/60 dark:hover:bg-stone-800 transition">
+            + Add Skill / Certificate
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left 7 Cols: Categorized Skills -->
+        <div class="lg:col-span-7 space-y-6" id="skills-categories-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Right 5 Cols: Certifications & Positions of Responsibility -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="font-mono text-xs uppercase tracking-wider text-stone-500 dark:text-stone-400">
+            Licenses, Certifications &amp; Leadership
+          </div>
+          <div id="certs-list" class="space-y-3">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION & ACADEMIC RECORD -->
+    <section id="section-education" class="py-14 border-b hairline-border">
+      <div class="mb-8">
+        <span class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">06 // Academic Foundation</span>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Education</h2>
+      </div>
+
+      <div id="education-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- HOW I WORK (3-Step Execution Framework inspired by sudhanshu.me) -->
+    <section id="section-process" class="py-14 border-b hairline-border">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400">07 // Operating Principles</span>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">How I work across engineering &amp; technical communication</h2>
+        </div>
+        <span class="font-mono text-xs text-stone-500">On-site · Gurugram / Gorakhpur · Remote Ready</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="surface-card rounded-xl p-6 space-y-3">
+          <div class="font-mono text-xs text-amber-600 dark:text-amber-400">STEP 01 // DIAGNOSTICS</div>
+          <h3 class="text-lg font-semibold">Map the single-line diagram &amp; failure mode first</h3>
+          <p class="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+            Whether analyzing 15+ equipment breakdown cases in Maruti Suzuki’s Paint Shop or tracing protection zones in a 400 kV substation, I start by isolating the exact bottleneck before proposing a fix.
+          </p>
+        </div>
+
+        <div class="surface-card rounded-xl p-6 space-y-3">
+          <div class="font-mono text-xs text-amber-600 dark:text-amber-400">STEP 02 // INSTRUMENTATION</div>
+          <h3 class="text-lg font-semibold">Automate thresholds with clean, observable logic</h3>
+          <p class="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+            From programming deterministic Ladder Logic in Mitsubishi GX Works2 to wiring 5 sensors and 4 relays on an ESP32 with Blynk IoT telemetry, every control loop is built for real-time visibility.
+          </p>
+        </div>
+
+        <div class="surface-card rounded-xl p-6 space-y-3">
+          <div class="font-mono text-xs text-amber-600 dark:text-amber-400">STEP 03 // CLARITY &amp; RETENTION</div>
+          <h3 class="text-lg font-semibold">Translate complex systems into high-retention proof</h3>
+          <p class="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+            Great engineering needs clear communication. Having written research-backed scripts that helped grow a channel from 200 to 100K+ subscribers (4M+ views), I document technical work with crisp clarity.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT & CALL TO ACTION FOOTER -->
+    <section id="section-contact" class="pt-14 pb-8">
+      <div class="surface-card rounded-2xl p-6 sm:p-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-mono">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>Available for Core Electrical, Automation, IoT &amp; Analyst Opportunities</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-normal tracking-tight">
+              Looking for an engineer who understands <span class="font-serif italic text-amber-600 dark:text-amber-400">both</span> the hardware and the big picture?
+            </h2>
+            <p class="text-sm sm:text-base text-stone-600 dark:text-stone-400 max-w-xl">
+              Reach out directly for full-time graduate roles (2027 batch), industrial automation projects, embedded IoT prototyping, or technical research collaborations.
+            </p>
+
+            <div class="flex flex-wrap gap-3 pt-2">
+              <a id="footer-email-link" href="mailto:Saurabhkushwaha7991@gmail.com" class="px-5 py-2.5 rounded-lg text-xs sm:text-sm font-medium bg-stone-900 text-stone-50 dark:bg-stone-100 dark:text-stone-900 hover:opacity-90 transition">
+                Email Saurabhkushwaha7991@gmail.com ↗
+              </a>
+              <a id="footer-linkedin-link" href="https://www.linkedin.com/in/saurabh-kumar-737232145" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium surface-subtle border hairline-border hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                LinkedIn Profile ↗
+              </a>
+              <a href="mailto:2023031062@mmmut.ac.in" class="px-4 py-2.5 rounded-lg text-xs sm:text-sm font-mono surface-subtle border hairline-border hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                Academic: 2023031062@mmmut.ac.in
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Message Composer (Opens pre-filled mailto or copies brief) -->
+          <div class="lg:col-span-5 surface-subtle rounded-xl p-5 border hairline-border space-y-3">
+            <div class="font-mono text-xs uppercase tracking-wider text-stone-500">Quick Recruiter / Collaborator Note</div>
+            <div>
+              <label for="quick-role-input" class="block text-xs text-stone-500 mb-1">Opportunity / Subject</label>
+              <input id="quick-role-input" type="text" placeholder="e.g., Graduate Engineer Trainee / Automation Role" class="w-full px-3 py-2 rounded-lg text-xs surface-card focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+            <div>
+              <label for="quick-msg-input" class="block text-xs text-stone-500 mb-1">Short Message</label>
+              <textarea id="quick-msg-input" rows="2" placeholder="Hi Saurabh, we reviewed your PLC & IoT proof of work and would love to connect..." class="w-full px-3 py-2 rounded-lg text-xs surface-card focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="send-mailto-btn" class="flex-1 py-2 px-3 rounded-lg text-xs font-medium bg-amber-600 text-white hover:bg-amber-500 transition">
+                Draft Email to Saurabh →
+              </button>
+              <button type="button" id="copy-contact-summary-btn" class="py-2 px-3 rounded-lg text-xs font-mono surface-card hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                Copy vCard Text
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t hairline-border flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-stone-500">
+          <div>© 2026 Saurabh Kumar · MMMUT Gorakhpur (Electrical Engineering)</div>
+          <div class="flex items-center gap-4">
+            <button type="button" id="footer-cms-btn" class="hover:text-amber-600 dark:hover:text-amber-400 transition">Manage Portfolio Data (CMS)</button>
+            <span>·</span>
+            <button type="button" id="export-html-footer-btn" class="hover:text-amber-600 dark:hover:text-amber-400 transition">Download Updated HTML</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PROOF / CASE STUDY DETAIL MODAL -->
+  <div id="proof-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="surface-card rounded-2xl max-w-2xl w-full max-h-[88vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-5">
+      <div class="flex items-start justify-between gap-4 border-b hairline-border pb-4">
+        <div>
+          <span id="modal-kicker" class="font-mono text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400">PROOF OF WORK</span>
+          <h3 id="modal-title" class="text-xl sm:text-2xl font-semibold mt-1">Case Study Title</h3>
+          <p id="modal-subtitle" class="text-xs font-mono text-stone-500 mt-0.5"></p>
+        </div>
+        <button type="button" id="close-proof-modal" class="p-2 rounded-lg surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 text-xs font-mono">
+          ESC ✕
+        </button>
+      </div>
+      <div id="modal-body" class="space-y-4 text-sm text-stone-700 dark:text-stone-300 leading-relaxed"></div>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO JOURNEY & SKILL STUDIO (LIVE CMS DRAWER FOR UPDATING OVER TIME) -->
+  <div id="cms-drawer-backdrop" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex justify-end">
+    <div class="surface-card w-full max-w-2xl h-full overflow-y-auto p-6 sm:p-8 flex flex-col justify-between shadow-2xl border-l hairline-border">
+      <div class="space-y-6">
+        <!-- Drawer Header -->
+        <div class="flex items-start justify-between gap-4 border-b hairline-border pb-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400">
+              <span>Portfolio Studio // Live Journey &amp; Skill Manager</span>
+            </div>
+            <h3 class="text-xl font-semibold mt-0.5">Update &amp; Add Your Professional Journey</h3>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">
+              Add new internships, projects, skills, or certifications anytime. Changes save automatically in your browser and can be exported as a ready-to-host standalone HTML file.
+            </p>
+          </div>
+          <button type="button" id="close-cms-btn" class="p-2 rounded-lg surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 text-xs font-mono">
+            Close ✕
+          </button>
+        </div>
+
+        <!-- Studio Mode Tabs -->
+        <div class="flex flex-wrap gap-1.5 p-1 rounded-xl surface-subtle border hairline-border text-xs font-mono">
+          <button type="button" data-cmstab="exp" class="cms-tab-btn px-3 py-1.5 rounded-lg bg-white dark:bg-stone-900 font-medium shadow-sm">+ Experience</button>
+          <button type="button" data-cmstab="proj" class="cms-tab-btn px-3 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:hover:text-white">+ Project</button>
+          <button type="button" data-cmstab="skill" class="cms-tab-btn px-3 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:hover:text-white">+ Skill</button>
+          <button type="button" data-cmstab="cert" class="cms-tab-btn px-3 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:hover:text-white">+ Certification</button>
+          <button type="button" data-cmstab="profile" class="cms-tab-btn px-3 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:hover:text-white">Profile &amp; Export</button>
+        </div>
+
+        <!-- TAB 1: ADD / MANAGE EXPERIENCE -->
+        <div id="cms-panel-exp" class="cms-panel space-y-4">
+          <div class="surface-subtle p-4 rounded-xl border hairline-border space-y-3">
+            <div class="font-mono text-xs font-semibold uppercase" id="exp-form-heading">Add New Experience / Internship</div>
+            <input type="hidden" id="exp-edit-id" value="" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Company / Organization *</label>
+                <input id="exp-company" type="text" placeholder="e.g., Siemens / BHEL / Tata Power" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Role / Title *</label>
+                <input id="exp-role" type="text" placeholder="e.g., Graduate Engineer Trainee" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Date Period *</label>
+                <input id="exp-period" type="text" placeholder="e.g., Aug 2026 – Present" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Location</label>
+                <input id="exp-location" type="text" placeholder="e.g., Noida, UP / Remote" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Practice Track</label>
+                <select id="exp-lens" class="w-full px-3 py-2 rounded-lg text-xs surface-card">
+                  <option value="industrial">01 Industrial &amp; Power Systems</option>
+                  <option value="embedded">02 Embedded IoT &amp; EV Energy</option>
+                  <option value="content">03 Technical &amp; Finance Writing</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Key Impact Badge (Proof Metric)</label>
+                <input id="exp-metric" type="text" placeholder="e.g., 99.4% Uptime / 20+ Panels Tested" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">Key Contributions (One bullet per line) *</label>
+              <textarea id="exp-bullets" rows="3" placeholder="Designed PLC control logic...&#10;Reduced fault diagnosis time by..." class="w-full px-3 py-2 rounded-lg text-xs surface-card"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">Tools &amp; Skills Used (comma-separated)</label>
+              <input id="exp-tags" type="text" placeholder="e.g., PLC, SCADA, AutoCAD Electrical, Preventive Maintenance" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="save-exp-btn" class="px-4 py-2 rounded-lg text-xs font-medium bg-amber-600 text-white hover:bg-amber-500 transition">
+                Save Experience to Portfolio
+              </button>
+              <button type="button" id="cancel-exp-edit-btn" class="hidden px-3 py-2 rounded-lg text-xs font-mono surface-card">
+                Cancel Edit
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-mono text-xs text-stone-500 uppercase">Existing Experience Entries (Click Edit or Remove)</div>
+            <div id="cms-exp-manage-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- TAB 2: ADD / MANAGE PROJECTS -->
+        <div id="cms-panel-proj" class="cms-panel hidden space-y-4">
+          <div class="surface-subtle p-4 rounded-xl border hairline-border space-y-3">
+            <div class="font-mono text-xs font-semibold uppercase" id="proj-form-heading">Add New Engineering Project</div>
+            <input type="hidden" id="proj-edit-id" value="" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-xs text-stone-500 mb-1">Project Title *</label>
+                <input id="proj-title" type="text" placeholder="e.g., Automated Microgrid Protection Relay Simulator" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Subtitle / Tech Summary *</label>
+                <input id="proj-subtitle" type="text" placeholder="e.g., MATLAB/Simulink, ESP32, Overcurrent Protection" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Practice Track</label>
+                <select id="proj-lens" class="w-full px-3 py-2 rounded-lg text-xs surface-card">
+                  <option value="embedded">02 Embedded IoT &amp; EV Energy</option>
+                  <option value="industrial">01 Industrial &amp; Power Systems</option>
+                  <option value="content">03 Technical &amp; Finance Writing</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">System Architecture / Signal Flow (use → between blocks)</label>
+              <input id="proj-flow" type="text" placeholder="e.g., CT/PT Sensors → Signal Conditioning → ESP32 Relay Trip → SCADA Dashboard" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+            </div>
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">Proof Bullets (One bullet per line) *</label>
+              <textarea id="proj-bullets" rows="3" placeholder="Engineered a real-time monitoring system...&#10;Validated load balancing across..." class="w-full px-3 py-2 rounded-lg text-xs surface-card"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Tech Tags (comma-separated)</label>
+                <input id="proj-tags" type="text" placeholder="e.g., ESP32, MATLAB, Power Electronics" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">External Proof / Repo Link (optional)</label>
+                <input id="proj-link" type="url" placeholder="https://github.com/..." class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="save-proj-btn" class="px-4 py-2 rounded-lg text-xs font-medium bg-amber-600 text-white hover:bg-amber-500 transition">
+                Save Project to Portfolio
+              </button>
+              <button type="button" id="cancel-proj-edit-btn" class="hidden px-3 py-2 rounded-lg text-xs font-mono surface-card">
+                Cancel Edit
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-mono text-xs text-stone-500 uppercase">Existing Projects</div>
+            <div id="cms-proj-manage-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- TAB 3: ADD / MANAGE SKILLS -->
+        <div id="cms-panel-skill" class="cms-panel hidden space-y-4">
+          <div class="surface-subtle p-4 rounded-xl border hairline-border space-y-3">
+            <div class="font-mono text-xs font-semibold uppercase">Add New Skill or Domain</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Skill / Tool / Subject Name *</label>
+                <input id="skill-name" type="text" placeholder="e.g., SCADA / AutoCAD Electrical / Python" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Category *</label>
+                <select id="skill-category" class="w-full px-3 py-2 rounded-lg text-xs surface-card">
+                  <option value="software">Software, Automation &amp; IoT Tools</option>
+                  <option value="core">Core Electrical Engineering Areas</option>
+                  <option value="soft">Leadership &amp; Professional Skills</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" id="save-skill-btn" class="px-4 py-2 rounded-lg text-xs font-medium bg-amber-600 text-white hover:bg-amber-500 transition">
+              + Add Skill Tag
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <div class="font-mono text-xs text-stone-500 uppercase">Click any skill tag below to remove it</div>
+            <div id="cms-skills-manage-list" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- TAB 4: ADD / MANAGE CERTIFICATIONS & RESPONSIBILITIES -->
+        <div id="cms-panel-cert" class="cms-panel hidden space-y-4">
+          <div class="surface-subtle p-4 rounded-xl border hairline-border space-y-3">
+            <div class="font-mono text-xs font-semibold uppercase">Add Certification or Position of Responsibility</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Title / Role *</label>
+                <input id="cert-title" type="text" placeholder="e.g., Industrial Automation — NPTEL" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Issuing Organization *</label>
+                <input id="cert-issuer" type="text" placeholder="e.g., IIT Kharagpur / MathWorks" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Badge Label</label>
+                <input id="cert-badge" type="text" placeholder="e.g., Certified / Member" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Certificate URL (optional)</label>
+                <input id="cert-url" type="url" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+            </div>
+            <button type="button" id="save-cert-btn" class="px-4 py-2 rounded-lg text-xs font-medium bg-amber-600 text-white hover:bg-amber-500 transition">
+              + Add Credential
+            </button>
+          </div>
+          <div id="cms-certs-manage-list" class="space-y-2"></div>
+        </div>
+
+        <!-- TAB 5: PROFILE SETTINGS & PORTABLE EXPORT -->
+        <div id="cms-panel-profile" class="cms-panel hidden space-y-4">
+          <div class="surface-subtle p-4 rounded-xl border hairline-border space-y-3">
+            <div class="font-mono text-xs font-semibold uppercase">Profile &amp; Headline Settings</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Full Name</label>
+                <input id="prof-name" type="text" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div>
+                <label class="block text-xs text-stone-500 mb-1">Current CGPA</label>
+                <input id="prof-cgpa" type="text" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs text-stone-500 mb-1">Availability Banner Text</label>
+                <input id="prof-avail" type="text" class="w-full px-3 py-2 rounded-lg text-xs surface-card" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs text-stone-500 mb-1">Bio Summary</label>
+                <textarea id="prof-bio" rows="2" class="w-full px-3 py-2 rounded-lg text-xs surface-card"></textarea>
+              </div>
+            </div>
+            <button type="button" id="save-profile-btn" class="px-4 py-2 rounded-lg text-xs font-medium bg-amber-600 text-white hover:bg-amber-500 transition">
+              Update Profile Info
+            </button>
+          </div>
+
+          <div class="surface-subtle p-4 rounded-xl border hairline-border space-y-3">
+            <div class="font-mono text-xs font-semibold uppercase">Permanent Export &amp; Backup</div>
+            <p class="text-xs text-stone-600 dark:text-stone-400">
+              Download a standalone HTML file with all your latest updates baked directly into the code (ready to deploy to GitHub Pages, Vercel, or Netlify), or save/load a JSON backup.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="export-standalone-html-btn" class="px-3.5 py-2 rounded-lg text-xs font-medium bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 hover:opacity-90 transition">
+                Download Updated .HTML Website ↓
+              </button>
+              <button type="button" id="export-json-btn" class="px-3 py-2 rounded-lg text-xs font-mono surface-card">
+                Export .JSON
+              </button>
+              <label class="px-3 py-2 rounded-lg text-xs font-mono surface-card cursor-pointer hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                Import .JSON
+                <input id="import-json-input" type="file" accept=".json" class="hidden" />
+              </label>
+              <button type="button" id="reset-default-data-btn" class="px-3 py-2 rounded-lg text-xs font-mono text-red-600 dark:text-red-400 border border-red-500/30 hover:bg-red-500/10 transition">
+                Reset to Original Resume
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 mt-6 border-t hairline-border flex items-center justify-between text-[11px] font-mono text-stone-500">
+        <span>Auto-saved to local storage</span>
+        <span>Press ESC to close studio</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl bg-stone-900 text-stone-50 dark:bg-stone-100 dark:text-stone-900 text-xs font-mono shadow-xl border hairline-border">
+    Action completed
+  </div>
+
+  <script>
+    // ============================================================================
+    // DEFAULT GROUNDED PORTFOLIO DATA (From Saurabh Kumar's Uploaded Resumes)
+    // ============================================================================
+    const DEFAULT_PORTFOLIO_DATA = /*__PORTFOLIO_DATA_START__*/ {
+      profile: {
+        name: "Saurabh Kumar",
+        rollNo: "2023031062",
+        degree: "B.Tech — Electrical Engineering (2023–2027)",
+        university: "Madan Mohan Malaviya University of Technology, Gorakhpur",
+        cgpa: "7.01",
+        phone: "+91-7991358918",
+        emailPersonal: "Saurabhkushwaha7991@gmail.com",
+        emailAcademic: "2023031062@mmmut.ac.in",
+        linkedin: "https://www.linkedin.com/in/saurabh-kumar-737232145",
+        availability: "Open for Core Electrical, PLC Automation & IoT Engineering Roles · 2027 Batch",
+        bio: "I’m Saurabh Kumar, an Electrical Engineering undergraduate at Madan Mohan Malaviya University of Technology. I ask what fault needs eliminating—or what metric needs moving—before I wire the relay, write the Ladder Logic, or draft the script."
+      },
+      metrics: [
+        {
+          id: "m1",
+          value: "15+",
+          label: "Breakdowns Analyzed",
+          context: "Maruti Suzuki Paint Shop · PM & PLC Troubleshooting",
+          lens: "industrial",
+          targetSection: "section-work"
+        },
+        {
+          id: "m2",
+          value: "400 kV",
+          label: "EHV Substation Systems",
+          context: "UPPTCL Gorakhpur · Transformers, Breakers & Relays",
+          lens: "industrial",
+          targetSection: "section-work"
+        },
+        {
+          id: "m3",
+          value: "100K+",
+          label: "Subscribers Scaled",
+          context: "Financially Free · Grew Channel from ~200 to 100,000+",
+          lens: "content",
+          targetSection: "section-work"
+        },
+        {
+          id: "m4",
+          value: "4M+",
+          label: "Organic Video Views",
+          context: "High-Retention Finance & Business Research Scripts",
+          lens: "content",
+          targetSection: "section-work"
+        },
+        {
+          id: "m5",
+          value: "5×4",
+          label: "Sensors & Relay Loops",
+          context: "ESP32 + Blynk IoT Saffron Hydroponics Automation",
+          lens: "embedded",
+          targetSection: "section-projects"
+        }
+      ],
+      experience: [
+        {
+          id: "exp-maruti",
+          company: "Maruti Suzuki India Limited",
+          role: "Project Engineering Intern",
+          period: "May 2026 – July 2026",
+          location: "Gurugram, Haryana",
+          lens: "industrial",
+          lensLabel: "Industrial Automation & Maintenance",
+          metricBadge: "15+ Breakdown Cases Analyzed",
+          bullets: [
+            "Gained hands-on exposure to PLC-based industrial automation, including PLC hardware (Mitsubishi GX Works2), Ladder Logic, I/O modules, control panels, sensors, actuators, relays, contactors, VFDs, and conveyor control systems within the Paint Shop.",
+            "Supported Maintenance Department operations, including preventive maintenance (PM), equipment inspection, fault troubleshooting, breakdown analysis, and safety practices across plant production equipment.",
+            "Analyzed 15+ equipment breakdown cases and supported preventive maintenance activities, contributing to improved equipment reliability and reduced production downtime."
+          ],
+          tags: ["PLC (Mitsubishi GX Works2)", "Ladder Logic", "VFDs", "I/O Modules", "Conveyor Control", "Preventive Maintenance", "Breakdown Analysis"],
+          proofArchitecture: "Field Sensors / Limit Switches → PLC Input Module → Mitsubishi GX Works2 Ladder Logic → Contactors / VFD Drives → Paint Shop Conveyor Line"
+        },
+        {
+          id: "exp-financially-free",
+          company: "Financially Free",
+          role: "Content Writer",
+          period: "March 2026 – May 2026",
+          location: "Remote",
+          lens: "content",
+          lensLabel: "Technical & Finance Storytelling",
+          metricBadge: "200 → 100K+ Subscribers · 4M+ Views",
+          bullets: [
+            "Wrote finance and business-focused YouTube scripts that contributed to channel growth from approximately 200 to 100,000+ subscribers.",
+            "Researched complex topics and transformed them into engaging, high-retention content, contributing to videos reaching approximately 4M+ views."
+          ],
+          tags: ["Deep-Dive Research", "High-Retention Scripting", "Financial & Business Analysis", "Audience Retention", "Story Structure"],
+          proofArchitecture: "Topic & Data Research → Hook & Retention Structuring → Narrative Script Synthesis → 100,000+ Subscriber & 4M+ View Outcome"
+        },
+        {
+          id: "exp-upptcl",
+          company: "UPPTCL (Uttar Pradesh Power Transmission Corp. Ltd.)",
+          role: "Summer Intern — 400 kV EHV Substation",
+          period: "May 2025 – June 2025",
+          location: "Gorakhpur, UP",
+          lens: "industrial",
+          lensLabel: "High-Voltage Power Transmission",
+          metricBadge: "400 kV EHV Substation Operations",
+          bullets: [
+            "Gained practical exposure to 400 kV EHV substation systems, including power transformers, circuit breakers, and protection relay panels.",
+            "Studied the operation and purpose of isolators, busbars, lightning arresters, and electrical protection systems in high-voltage power transmission.",
+            "Assisted in substation operation analysis, equipment monitoring, and protection practices, strengthening core electrical troubleshooting skills."
+          ],
+          tags: ["400 kV EHV Substation", "Power Transformers", "Circuit Breakers", "Protection Relay Panels", "Isolators & Busbars", "Lightning Arresters"],
+          proofArchitecture: "400 kV Incoming Line → Lightning Arrester → Line Isolator → SF6/Vacuum Circuit Breaker → Current/Potential Transformers → Busbar & Power Transformer Protection Relays"
+        }
+      ],
+      projects: [
+        {
+          id: "proj-hydroponics",
+          title: "Smart Hydroponics System for Saffron Cultivation",
+          subtitle: "ESP32, Arduino IDE, Multi-Sensor Array & Blynk IoT",
+          lens: "embedded",
+          badge: "Embedded IoT Automation",
+          flow: "DHT11 + LDR + Soil Moisture + MQ135 + Rain Sensors → ESP32 (Arduino IDE) → 4-Channel Relay Module (Fan, Pump, Grow Light, Humidifier) → 16×2 LCD & Blynk IoT Wi-Fi Dashboard",
+          bullets: [
+            "Engineered an ESP32-based automation system in Arduino IDE for real-time environmental monitoring of temperature, humidity, soil moisture, light intensity, and air quality.",
+            "Integrated DHT11, LDR, soil-moisture, MQ135, and rain sensors with ESP32 for continuous data acquisition and control.",
+            "Automated 4-channel relay control logic using ESP32 to manage fan, water pump, grow light, and humidifier operations based on programmed environmental thresholds.",
+            "Deployed Blynk IoT mobile dashboard and 16×2 LCD interfaces for real-time remote visualization and manual device control over Wi-Fi."
+          ],
+          tags: ["ESP32", "Arduino IDE", "Blynk IoT", "DHT11 / LDR / MQ135", "4-Channel Relay Logic", "16×2 LCD", "Wi-Fi Telemetry"],
+          simTarget: "hydro",
+          link: ""
+        },
+        {
+          id: "proj-solar-ev",
+          title: "Solar-Powered Electric Vehicle Charging System (Seminar Project)",
+          subtitle: "Solar PV, MPPT, LFP Battery Bank, EVSE & V2G EMS",
+          lens: "embedded",
+          badge: "Clean Energy & Power Electronics",
+          flow: "Solar PV Array → MPPT Charge Controller → LFP Battery Bank → DC-DC / DC-AC Converter → EVSE (EV Charger) → Electric Vehicle (BEV/PHEV) ↔ Smart EMS / V2G Grid",
+          bullets: [
+            "Presented a technical study on integrating Solar Photovoltaic (PV) generation with Electric Vehicle (EV) charging stations for clean mobility under India’s FAME II scheme.",
+            "Studied the complete energy flow architecture: Solar PV Array → MPPT Charge Controller → LFP Battery Bank → DC-DC / DC-AC Converter → EVSE (EV Charger) → Electric Vehicle (BEV/PHEV).",
+            "Analyzed Smart Energy Management Systems (EMS) for load balancing between solar, battery storage, and utility grid, along with future scope in Vehicle-to-Grid (V2G) peak shaving."
+          ],
+          tags: ["Solar PV", "MPPT Controller", "LFP Battery Bank", "DC-DC / DC-AC Converters", "EVSE", "Smart EMS", "V2G Peak Shaving", "FAME II"],
+          simTarget: "ev",
+          link: ""
+        }
+      ],
+      skills: {
+        software: [
+          "PLC (Mitsubishi GX Works2)",
+          "Ladder Logic",
+          "MATLAB / Simulink",
+          "ESP32 & Arduino IDE",
+          "Blynk IoT Platform",
+          "SAP",
+          "MS Excel",
+          "MS PowerPoint"
+        ],
+        core: [
+          "Power Systems (400 kV EHV)",
+          "Electrical Machines",
+          "Electrical Circuits",
+          "Control Systems",
+          "Power Electronics (MPPT / Converters)",
+          "Signals & Systems",
+          "Industrial Preventive Maintenance"
+        ],
+        soft: [
+          "Effective Communication",
+          "Technical & Narrative Scripting",
+          "Leadership (NCC Cadet)",
+          "Critical Thinking",
+          "Problem-Solving & Fault Analysis",
+          "Time Management",
+          "Teamwork"
+        ]
+      },
+      certifications: [
+        {
+          id: "cert-matlab",
+          title: "MATLAB Certification",
+          issuer: "MathWorks",
+          badge: "Verified Certification",
+          url: ""
+        },
+        {
+          id: "cert-ai",
+          title: "AI For All",
+          issuer: "TCS iON, Tata Consultancy Services",
+          badge: "Certificate Link",
+          url: "https://drive.google.com/file/d/1b7rHbhI6y5aZhJWWqgMjPZR8hO0cTYBy/view?usp=drive_link"
+        },
+        {
+          id: "cert-comm",
+          title: "Communication Skill",
+          issuer: "TCS iON, Tata Consultancy Services",
+          badge: "Certificate Link",
+          url: "https://drive.google.com/file/d/1ECNQNo3cXh8N3VXDs1jZfZtHUQ7O_auL/view?usp=drive_link"
+        },
+        {
+          id: "por-ncc",
+          title: "Cadet — National Cadet Corps (NCC)",
+          issuer: "Position of Responsibility",
+          badge: "Member",
+          url: ""
+        },
+        {
+          id: "por-moneytalk",
+          title: "Content Writer — Money Talk by Financially Free",
+          issuer: "Position of Responsibility",
+          badge: "Member",
+          url: ""
+        }
+      ],
+      education: [
+        {
+          institution: "Madan Mohan Malaviya University of Technology, Gorakhpur",
+          degree: "Bachelor of Technology (B.Tech) — Electrical Engineering",
+          period: "2023 – 2027",
+          score: "CGPA: 7.01",
+          detail: "Roll No.: 2023031062 · Core focus on Power Systems, Machines, Control & Industrial Automation"
+        },
+        {
+          institution: "Lal Bahadur Shastri Intermediate College",
+          degree: "Board of Intermediate Education, Uttar Pradesh (Class XII)",
+          period: "2021",
+          score: "Percentage: 78.2%",
+          detail: "Mathematics, Physics & Chemistry stream"
+        },
+        {
+          institution: "St. Xavier’s School, Azamgarh, UP",
+          degree: "Board of Secondary Education, CBSE (Class X)",
+          period: "2019",
+          score: "Percentage: 84.8%",
+          detail: "Secondary School Examination"
+        }
+      ]
+    } /*__PORTFOLIO_DATA_END__*/;
+
+    // ============================================================================
+    // STATE MANAGEMENT & SAFE LOCALSTORAGE PERSISTENCE
+    // ============================================================================
+    const STORAGE_KEY = "saurabh_portfolio_v1_data";
+    let portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO_DATA));
+    let activeLens = "all";
+
+    function loadSavedData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.profile && Array.isArray(parsed.experience)) {
+            portfolioData = parsed;
+          }
+        }
+      } catch (err) {
+        // Fallback to default in sandboxed environments
+      }
+    }
+
+    function savePortfolioData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolioData));
+      } catch (err) {
+        // Ignore storage quota / sandbox exceptions
+      }
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById("toast-box");
+      if (!box) return;
+      box.textContent = msg;
+      box.classList.remove("hidden");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        box.classList.add("hidden");
+      }, 3200);
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // ============================================================================
+    // RENDER PORTFOLIO SECTIONS
+    // ============================================================================
+    function renderAll() {
+      renderProfileHeader();
+      renderMetrics();
+      renderExperience();
+      renderProjects();
+      renderSkillsAndCerts();
+      renderEducation();
+      renderCmsLists();
+    }
+
+    function renderProfileHeader() {
+      const p = portfolioData.profile;
+      document.getElementById("nav-name").textContent = p.name;
+      document.getElementById("hero-availability").textContent = p.availability;
+      document.getElementById("hero-roll").textContent = p.rollNo;
+      document.getElementById("hero-summary").textContent = p.bio;
+      document.getElementById("card-name").textContent = p.name;
+      document.getElementById("card-degree").textContent = p.degree;
+      document.getElementById("card-cgpa").textContent = p.cgpa;
+      document.getElementById("card-linkedin").href = p.linkedin || "https://www.linkedin.com/in/saurabh-kumar-737232145";
+      document.getElementById("card-email").href = "mailto:" + p.emailPersonal;
+      document.getElementById("footer-email-link").href = "mailto:" + p.emailPersonal;
+      document.getElementById("footer-email-link").textContent = "Email " + p.emailPersonal + " ↗";
+      document.getElementById("footer-linkedin-link").href = p.linkedin || "https://www.linkedin.com/in/saurabh-kumar-737232145";
+    }
+
+    function renderMetrics() {
+      const container = document.getElementById("metrics-grid");
+      container.innerHTML = "";
+      portfolioData.metrics.forEach((m, idx) => {
+        const isDimmed = activeLens !== "all" && m.lens !== activeLens;
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "text-left p-4 sm:p-5 rounded-xl surface-card transition flex flex-col justify-between " +
+          (isDimmed ? "opacity-40 hover:opacity-80" : "ring-1 ring-transparent hover:border-amber-500/60");
+        card.innerHTML = `
+          <div class="flex items-center justify-between text-[11px] font-mono text-stone-400 mb-2">
+            <span>0${idx + 1}</span>
+            <span class="uppercase">${escapeHtml(m.lens)}</span>
+          </div>
+          <div>
+            <div class="text-2xl sm:text-3xl font-semibold tracking-tight font-mono text-stone-900 dark:text-stone-100">${escapeHtml(m.value)}</div>
+            <div class="text-xs font-semibold mt-1">${escapeHtml(m.label)}</div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 mt-1 leading-snug">${escapeHtml(m.context)}</p>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          const target = document.getElementById(m.targetSection || "section-work");
+          if (target) target.scrollIntoView({ behavior: "smooth" });
+        });
+        container.appendChild(card);
+      });
+    }
+
+    function renderExperience() {
+      const container = document.getElementById("experience-list");
+      container.innerHTML = "";
+      const filtered = portfolioData.experience.filter(item => activeLens === "all" || item.lens === activeLens);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-8 rounded-xl surface-subtle text-center text-xs font-mono text-stone-500">No experience entries in this lens yet. Click "+ Add Experience" to add one.</div>`;
+        return;
+      }
+
+      filtered.forEach((exp, idx) => {
+        const card = document.createElement("article");
+        card.className = "surface-card rounded-2xl p-5 sm:p-7 transition";
+        const bulletsHtml = (exp.bullets || []).map(b => `
+          <li class="flex items-start gap-2.5 text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
+            <span class="font-mono text-amber-600 dark:text-amber-400 mt-1 text-xs">→</span>
+            <span>${escapeHtml(b)}</span>
+          </li>
+        `).join("");
+
+        const tagsHtml = (exp.tags || []).map(t => `
+          <span class="px-2.5 py-1 rounded-md text-[11px] font-mono surface-subtle border hairline-border text-stone-600 dark:text-stone-300">${escapeHtml(t)}</span>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4 pb-4 border-b hairline-border">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+                <span class="text-amber-600 dark:text-amber-400 font-semibold">0${idx + 1} // ${escapeHtml(exp.lensLabel || exp.lens.toUpperCase())}</span>
+                <span class="text-stone-300 dark:text-stone-700">·</span>
+                <span class="text-stone-500 dark:text-stone-400">${escapeHtml(exp.period)}</span>
+                <span class="text-stone-300 dark:text-stone-700">·</span>
+                <span class="text-stone-500 dark:text-stone-400">${escapeHtml(exp.location)}</span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-semibold">
+                ${escapeHtml(exp.role)} <span class="text-stone-400 font-normal">@</span> ${escapeHtml(exp.company)}
+              </h3>
+            </div>
+            <div class="flex items-center gap-2 self-start">
+              ${exp.metricBadge ? `<span class="px-3 py-1 rounded-full text-xs font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">${escapeHtml(exp.metricBadge)}</span>` : ""}
+              <button type="button" data-exp-proof="${escapeHtml(exp.id)}" class="exp-proof-btn px-3 py-1 rounded-lg text-xs font-mono surface-subtle hover:bg-stone-200 dark:hover:bg-stone-800 transition">
+                Inspect System ↗
+              </button>
+            </div>
+          </div>
+
+          <ul class="mt-4 space-y-2.5">
+            ${bulletsHtml}
+          </ul>
+
+          ${exp.proofArchitecture ? `
+            <div class="mt-5 p-3.5 rounded-xl surface-subtle border hairline-border font-mono text-xs text-stone-600 dark:text-stone-300">
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 block mb-1">System / Workflow Chain:</span>
+              ${escapeHtml(exp.proofArchitecture)}
+            </div>
+          ` : ""}
+
+          <div class="mt-4 pt-3 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              ${tagsHtml}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll(".exp-proof-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-exp-proof");
+          const exp = portfolioData.experience.find(e => e.id === id);
+          if (exp) openProofModalForExperience(exp);
+        });
+      });
+    }
+
+    function renderProjects() {
+      const container = document.getElementById("projects-grid");
+      container.innerHTML = "";
+      const filtered = portfolioData.projects.filter(item => activeLens === "all" || item.lens === activeLens);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-2 p-8 rounded-xl surface-subtle text-center text-xs font-mono text-stone-500">No projects in this practice lens. Switch to "All Work" or click "+ Add Project".</div>`;
+        return;
+      }
+
+      filtered.forEach((proj, idx) => {
+        const card = document.createElement("article");
+        card.className = "surface-card rounded-2xl p-6 flex flex-col justify-between space-y-5";
+
+        const bulletsHtml = (proj.bullets || []).map(b => `
+          <li class="flex items-start gap-2 text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
+            <span class="font-mono text-amber-600 dark:text-amber-400 mt-0.5">→</span>
+            <span>${escapeHtml(b)}</span>
+          </li>
+        `).join("");
+
+        const tagsHtml = (proj.tags || []).map(t => `
+          <span class="px-2 py-0.5 rounded text-[11px] font-mono surface-subtle border hairline-border text-stone-600 dark:text-stone-300">${escapeHtml(t)}</span>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="space-y-4">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono text-xs text-amber-600 dark:text-amber-400 uppercase">PROJECT 0${idx + 1} // ${escapeHtml(proj.badge || proj.lens)}</span>
+              ${proj.link ? `<a href="${escapeHtml(proj.link)}" target="_blank" rel="noopener noreferrer" class="font-mono text-xs underline hover:text-amber-500">External Link ↗</a>` : ""}
+            </div>
+            <div>
+              <h3 class="text-lg sm:text-xl font-semibold tracking-tight">${escapeHtml(proj.title)}</h3>
+              <p class="text-xs font-mono text-stone-500 dark:text-stone-400 mt-1">${escapeHtml(proj.subtitle)}</p>
+            </div>
+
+            ${proj.flow ? `
+              <div class="p-3.5 rounded-xl surface-subtle border hairline-border font-mono text-[11px] leading-relaxed text-stone-700 dark:text-stone-300">
+                <span class="text-[10px] uppercase tracking-wider text-stone-400 block mb-1">Architecture / Energy Flow:</span>
+                ${escapeHtml(proj.flow)}
+              </div>
+            ` : ""}
+
+            <ul class="space-y-2">
+              ${bulletsHtml}
+            </ul>
+          </div>
+
+          <div class="pt-4 border-t hairline-border space-y-3">
+            <div class="flex flex-wrap gap-1.5">
+              ${tagsHtml}
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              ${proj.simTarget ? `
+                <button type="button" data-opensim="${escapeHtml(proj.simTarget)}" class="open-sim-btn inline-flex items-center gap-1.5 text-xs font-mono font-medium text-amber-600 dark:text-amber-400 hover:underline">
+                  <span>⚡ Test Live in System Lab →</span>
+                </button>
+              ` : `<span></span>`}
+              <button type="button" data-proj-proof="${escapeHtml(proj.id)}" class="proj-proof-btn text-xs font-mono text-stone-500 hover:text-stone-900 dark:hover:text-white">
+                Full Specs ↗
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll(".open-sim-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sim = btn.getAttribute("data-opensim");
+          switchSimulatorTab(sim);
+          const lab = document.getElementById("section-lab");
+          if (lab) lab.scrollIntoView({ behavior: "smooth" });
+        });
+      });
+
+      container.querySelectorAll(".proj-proof-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-proj-proof");
+          const proj = portfolioData.projects.find(p => p.id === id);
+          if (proj) openProofModalForProject(proj);
+        });
+      });
+    }
+
+    function renderSkillsAndCerts() {
+      const skillContainer = document.getElementById("skills-categories-container");
+      const groups = [
+        { key: "software", title: "Software, PLC Automation & IoT Tools", code: "01 / TOOLS" },
+        { key: "core", title: "Core Electrical Engineering Areas of Interest", code: "02 / CORE EE" },
+        { key: "soft", title: "Leadership, Communication & Soft Skills", code: "03 / EXECUTION" }
+      ];
+
+      skillContainer.innerHTML = groups.map(g => {
+        const list = portfolioData.skills[g.key] || [];
+        const pills = list.map(s => `
+          <span class="px-3 py-1.5 rounded-lg text-xs font-mono surface-card hover:border-amber-500/60 transition inline-flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500/80"></span>
+            ${escapeHtml(s)}
+          </span>
+        `).join("");
+        return `
+          <div class="surface-subtle p-5 rounded-2xl border hairline-border space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-sm">${g.title}</span>
+              <span class="font-mono text-[11px] text-stone-400">${g.code}</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${pills}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const certsContainer = document.getElementById("certs-list");
+      certsContainer.innerHTML = portfolioData.certifications.map(c => `
+        <div class="surface-card p-4 rounded-xl flex items-center justify-between gap-3">
+          <div>
+            <div class="font-medium text-sm">${escapeHtml(c.title)}</div>
+            <div class="text-xs text-stone-500 dark:text-stone-400 font-mono mt-0.5">${escapeHtml(c.issuer)}</div>
+          </div>
+          ${c.url ? `
+            <a href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 transition whitespace-nowrap">
+              ${escapeHtml(c.badge || "Certificate")} ↗
+            </a>
+          ` : `
+            <span class="px-2.5 py-1 rounded-md text-xs font-mono surface-subtle border hairline-border text-stone-600 dark:text-stone-300 whitespace-nowrap">
+              ${escapeHtml(c.badge || "Verified")}
+            </span>
+          `}
+        </div>
+      `).join("");
+    }
+
+    function renderEducation() {
+      const container = document.getElementById("education-list");
+      container.innerHTML = portfolioData.education.map((ed, idx) => `
+        <div class="surface-card rounded-xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between font-mono text-xs text-stone-400">
+              <span>0${idx + 1} // ACADEMIC</span>
+              <span>${escapeHtml(ed.period)}</span>
+            </div>
+            <h3 class="font-semibold text-base leading-snug">${escapeHtml(ed.institution)}</h3>
+            <p class="text-xs text-stone-600 dark:text-stone-300">${escapeHtml(ed.degree)}</p>
+          </div>
+          <div class="pt-3 border-t hairline-border flex items-center justify-between">
+            <span class="font-mono text-xs font-semibold text-amber-600 dark:text-amber-400">${escapeHtml(ed.score)}</span>
+            <span class="text-[11px] font-mono text-stone-400 truncate max-w-[170px]" title="${escapeHtml(ed.detail)}">${escapeHtml(ed.detail)}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // ============================================================================
+    // PROOF MODAL INSPECTOR
+    // ============================================================================
+    function openProofModalForExperience(exp) {
+      const modal = document.getElementById("proof-modal");
+      document.getElementById("modal-kicker").textContent = exp.lensLabel || "EXPERIENCE PROOF OF WORK";
+      document.getElementById("modal-title").textContent = `${exp.role} — ${exp.company}`;
+      document.getElementById("modal-subtitle").textContent = `${exp.period} · ${exp.location}`;
+      document.getElementById("modal-body").innerHTML = `
+        ${exp.metricBadge ? `<div class="inline-block px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">${escapeHtml(exp.metricBadge)}</div>` : ""}
+        ${exp.proofArchitecture ? `
+          <div class="p-4 rounded-xl surface-subtle border hairline-border font-mono text-xs">
+            <div class="text-[10px] uppercase text-stone-400 mb-1">Technical Signal / Execution Chain</div>
+            ${escapeHtml(exp.proofArchitecture)}
+          </div>
+        ` : ""}
+        <div class="space-y-2">
+          <div class="font-mono text-xs uppercase text-stone-400">Verified Responsibilities &amp; Impact</div>
+          <ul class="space-y-2">
+            ${(exp.bullets || []).map(b => `<li class="flex gap-2"><span>→</span><span>${escapeHtml(b)}</span></li>`).join("")}
+          </ul>
+        </div>
+        <div class="pt-2 flex flex-wrap gap-1.5">
+          ${(exp.tags || []).map(t => `<span class="px-2.5 py-1 rounded text-xs font-mono surface-subtle border hairline-border">${escapeHtml(t)}</span>`).join("")}
+        </div>
+      `;
+      modal.classList.remove("hidden");
+    }
+
+    function openProofModalForProject(proj) {
+      const modal = document.getElementById("proof-modal");
+      document.getElementById("modal-kicker").textContent = proj.badge || "ENGINEERED SYSTEM";
+      document.getElementById("modal-title").textContent = proj.title;
+      document.getElementById("modal-subtitle").textContent = proj.subtitle;
+      document.getElementById("modal-body").innerHTML = `
+        ${proj.flow ? `
+          <div class="p-4 rounded-xl surface-subtle border hairline-border font-mono text-xs">
+            <div class="text-[10px] uppercase text-stone-400 mb-1">Complete System Architecture</div>
+            ${escapeHtml(proj.flow)}
+          </div>
+        ` : ""}
+        <div class="space-y-2">
+          <div class="font-mono text-xs uppercase text-stone-400">Engineering Implementation Details</div>
+          <ul class="space-y-2">
+            ${(proj.bullets || []).map(b => `<li class="flex gap-2"><span>→</span><span>${escapeHtml(b)}</span></li>`).join("")}
+          </ul>
+        </div>
+        <div class="pt-2 flex flex-wrap gap-1.5">
+          ${(proj.tags || []).map(t => `<span class="px-2.5 py-1 rounded text-xs font-mono surface-subtle border hairline-border">${escapeHtml(t)}</span>`).join("")}
+        </div>
+      `;
+      modal.classList.remove("hidden");
+    }
+
+    // ============================================================================
+    // INTERACTIVE SYSTEM LAB SIMULATORS (1. Hydroponics, 2. Solar-EV, 3. PLC)
+    // ============================================================================
+    let hydroAqiHigh = false;
+    let hydroManualOverride = false;
+    let manualRelayStates = [true, true, true, true];
+
+    function updateHydroSim() {
+      const temp = Number(document.getElementById("sim-temp").value);
+      const moisture = Number(document.getElementById("sim-moisture").value);
+      const light = Number(document.getElementById("sim-light").value);
+      const humidity = Number(document.getElementById("sim-humidity").value);
+
+      document.getElementById("val-temp").textContent = temp + "°C";
+      document.getElementById("val-moisture").textContent = moisture + "%";
+      document.getElementById("val-light").textContent = light + " lx";
+      document.getElementById("val-humidity").textContent = humidity + "%";
+      document.getElementById("val-aqi").textContent = hydroAqiHigh ? "410 PPM (High CO₂/VOC)" : "135 PPM (Optimal)";
+
+      const relays = [
+        {
+          ch: "CH1",
+          name: "Exhaust & Cooling Fan",
+          pin: "GPIO 26",
+          active: hydroManualOverride ? manualRelayStates[0] : (temp > 24 || hydroAqiHigh),
+          reason: temp > 24 ? `Temp ${temp}°C > 24°C setpoint` : (hydroAqiHigh ? "MQ135 Air Quality > 350 PPM" : `Temp ${temp}°C within saffron range`)
+        },
+        {
+          ch: "CH2",
+          name: "Nutrient Water Pump",
+          pin: "GPIO 27",
+          active: hydroManualOverride ? manualRelayStates[1] : (moisture < 55),
+          reason: moisture < 55 ? `Moisture ${moisture}% < 55% threshold` : `Root zone hydrated (${moisture}%)`
+        },
+        {
+          ch: "CH3",
+          name: "Full-Spectrum Grow Light",
+          pin: "GPIO 14",
+          active: hydroManualOverride ? manualRelayStates[2] : (light < 450),
+          reason: light < 450 ? `LDR ${light} lx < 450 lx threshold` : `Sufficient DLI (${light} lx)`
+        },
+        {
+          ch: "CH4",
+          name: "Ultrasonic Humidifier",
+          pin: "GPIO 12",
+          active: hydroManualOverride ? manualRelayStates[3] : (humidity < 60),
+          reason: humidity < 60 ? `Humidity ${humidity}% < 60% setpoint` : `Humidity optimal (${humidity}%)`
+        }
+      ];
+
+      const container = document.getElementById("relay-cards-container");
+      container.innerHTML = relays.map((r, i) => `
+        <button type="button" data-relay-idx="${i}" class="relay-toggle-card text-left p-3.5 rounded-xl border transition ${
+          r.active
+            ? "bg-emerald-500/10 border-emerald-500/40"
+            : "surface-subtle hairline-border opacity-75"
+        }">
+          <div class="flex items-center justify-between font-mono text-[11px]">
+            <span class="text-stone-500 dark:text-stone-400">${r.ch} · ${r.pin}</span>
+            <span class="px-2 py-0.5 rounded font-semibold ${
+              r.active ? "bg-emerald-500 text-white" : "bg-stone-300 dark:bg-stone-700 text-stone-700 dark:text-stone-300"
+            }">${r.active ? "RELAY ON" : "OFF"}</span>
+          </div>
+          <div class="font-semibold text-sm mt-1">${r.name}</div>
+          <div class="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5 font-mono">${r.reason}</div>
+        </button>
+      `).join("");
+
+      container.querySelectorAll(".relay-toggle-card").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.getAttribute("data-relay-idx"));
+          hydroManualOverride = true;
+          manualRelayStates[idx] = !RelaysCurrentState(relays, idx);
+          document.getElementById("hydro-override-btn").textContent = "Mode: BLYNK MANUAL OVERRIDE";
+          updateHydroSim();
+        });
+      });
+
+      document.getElementById("lcd-line-1").textContent = `T:${temp}C H:${humidity}% M:${moisture}%`;
+      document.getElementById("lcd-line-2").textContent =
+        `RLY: F:${relays[0].active ? 1 : 0} P:${relays[1].active ? 1 : 0} L:${relays[2].active ? 1 : 0} U:${relays[3].active ? 1 : 0}`;
+    }
+
+    function RelaysCurrentState(relays, idx) {
+      return relays[idx] ? relays[idx].active : false;
+    }
+
+    // Simulator 2: Solar-EV Architecture Data
+    const EV_STAGES = [
+      {
+        code: "01 / PV",
+        name: "Solar PV Array",
+        spec: "Monocrystalline PV String",
+        role: "Captures solar irradiance and generates variable DC voltage for clean off-grid/hybrid EV charging under India's FAME II framework.",
+        metrics: "DC Bus Output: 380–450V DC · Zero-Emission Generation"
+      },
+      {
+        code: "02 / MPPT",
+        name: "MPPT Charge Controller",
+        spec: "Perturb & Observe DC-DC",
+        role: "Continuously tracks the Maximum Power Point of the PV array under varying irradiance and temperature to maximize harvesting efficiency.",
+        metrics: "Tracking Efficiency: >98.5% · Buck/Boost Regulation"
+      },
+      {
+        code: "03 / STORAGE",
+        name: "LFP Battery Bank",
+        spec: "LiFePO4 Stationary Buffer",
+        role: "Buffers intermittent solar generation and supplies high C-rate discharge during cloud transients or evening EV charging sessions.",
+        metrics: "Chemistry: LiFePO4 · High Thermal Stability & Cycle Life"
+      },
+      {
+        code: "04 / POWER ELEC",
+        name: "DC-DC / Bidirectional Inverter",
+        spec: "Multi-Port Converter + EMS",
+        role: "Regulates voltage between the solar bus, stationary LFP storage, utility grid tie, and EVSE output port with Smart EMS load balancing.",
+        metrics: "Smart EMS Load Balancing · Bidirectional V2G Ready"
+      },
+      {
+        code: "05 / EVSE",
+        name: "EVSE Charging Station",
+        spec: "CCS2 / Type-2 AC & DC",
+        role: "Manages pilot communication, ground-fault protection, and power delivery to the Electric Vehicle.",
+        metrics: "Protection: RCD + Surge Arrester · FAME-II Compliant"
+      },
+      {
+        code: "06 / V2G",
+        name: "Electric Vehicle & V2G Grid",
+        spec: "BEV / PHEV Peak Shaving",
+        role: "Supports standard vehicle charging as well as future Vehicle-to-Grid (V2G) discharge during utility peak tariff windows.",
+        metrics: "Grid Peak Shaving · Bidirectional Energy Flow"
+      }
+    ];
+    let selectedEvStage = 0;
+    let evOperatingMode = "solar";
+
+    function renderEvSimulator() {
+      const grid = document.getElementById("ev-stages-grid");
+      grid.innerHTML = EV_STAGES.map((st, idx) => `
+        <button type="button" data-evstage="${idx}" class="ev-stage-btn text-left p-3 rounded-xl border transition ${
+          selectedEvStage === idx
+            ? "bg-amber-500/15 border-amber-500 ring-1 ring-amber-500"
+            : "surface-subtle hairline-border hover:border-stone-400"
+        }">
+          <div class="font-mono text-[10px] text-amber-600 dark:text-amber-400">${st.code}</div>
+          <div class="font-semibold text-xs mt-1 leading-snug">${st.name}</div>
+          <div class="text-[10px] font-mono text-stone-400 mt-1">${idx < 5 ? (evOperatingMode === "v2g" && idx >= 3 ? "↔ Bi-Dir Flow" : "→ Forward Flow") : "⚡ Load/Grid"}</div>
+        </button>
+      `).join("");
+
+      grid.querySelectorAll(".ev-stage-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedEvStage = Number(btn.getAttribute("data-evstage"));
+          renderEvSimulator();
+        });
+      });
+
+      const current = EV_STAGES[selectedEvStage];
+      const detail = document.getElementById("ev-stage-detail");
+      detail.innerHTML = `
+        <div class="md:col-span-2 space-y-1.5">
+          <div class="font-mono text-xs text-amber-600 dark:text-amber-400">${current.code} · ${current.spec} (${evOperatingMode === "solar" ? "MODE: DAYLIGHT SOLAR CHARGE" : "MODE: V2G PEAK SHAVING"})</div>
+          <h4 class="font-semibold text-base">${current.name}</h4>
+          <p class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed">${current.role}</p>
+        </div>
+        <div class="p-3.5 rounded-lg surface-card font-mono text-xs space-y-1">
+          <div class="text-[10px] text-stone-400 uppercase">Engineering Parameters</div>
+          <div class="text-emerald-600 dark:text-emerald-400 font-medium">${current.metrics}</div>
+        </div>
+      `;
+    }
+
+    // Simulator 3: PLC Ladder Logic State
+    const plcState = { x1: true, x2: true, x3: true, x4: true };
+
+    function renderPlcSimulator() {
+      ["x1", "x2", "x3", "x4"].forEach(k => {
+        const badge = document.getElementById("plc-state-" + k);
+        const on = plcState[k];
+        badge.textContent = on ? (k === "x4" ? "NORMAL (1)" : "CLOSED (1)") : "TRIPPED (0)";
+        badge.className = "px-1.5 py-0.5 rounded " + (on ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400" : "bg-red-500/20 text-red-600 dark:text-red-400");
+      });
+
+      const y010 = plcState.x1 && plcState.x2 && plcState.x3 && plcState.x4;
+      const runBadge = document.getElementById("plc-run-badge");
+      const diagText = document.getElementById("plc-diagnostic-text");
+
+      if (y010) {
+        runBadge.textContent = "OUTPUT Y010: ENERGIZED (VFD RUN)";
+        runBadge.className = "font-mono text-xs px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20";
+        diagText.textContent = "STATUS: ALL INTERLOCKS HEALTHY → CONVEYOR RUNNING";
+        diagText.className = "text-emerald-400";
+      } else {
+        const faults = [];
+        if (!plcState.x1) faults.push("X001 No Skid Detected");
+        if (!plcState.x2) faults.push("X002 Booth Gate Open");
+        if (!plcState.x3) faults.push("X003 VFD Overload Trip");
+        if (!plcState.x4) faults.push("X004 E-Stop Pressed");
+        runBadge.textContent = "OUTPUT Y010: DE-ENERGIZED (STOP)";
+        runBadge.className = "font-mono text-xs px-2.5 py-1 rounded bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20";
+        diagText.textContent = "FAULT: " + faults.join(" | ");
+        diagText.className = "text-amber-400";
+      }
+
+      const c1 = plcState.x1 ? "[|/| X001 ON ]" : "[| | X001 OFF]";
+      const c2 = plcState.x2 ? "[|/| X002 ON ]" : "[| | X002 OFF]";
+      const c3 = plcState.x3 ? "[|/| X003 ON ]" : "[| | X003 OFF]";
+      const c4 = plcState.x4 ? "[|/| X004 NC ]" : "[| | X004 ESTP]";
+      const coil = y010 ? "( Y010 VFD_RUN : ON  )" : "( Y010 VFD_RUN : OFF )";
+
+      document.getElementById("plc-ladder-ascii").textContent =
+        `|----${c1}----+----${c2}----+----${c3}----+----${c4}--------${coil}----|`;
+    }
+
+    function switchSimulatorTab(simKey) {
+      document.querySelectorAll(".sim-panel").forEach(p => p.classList.add("hidden"));
+      const activePanel = document.getElementById("sim-panel-" + simKey);
+      if (activePanel) activePanel.classList.remove("hidden");
+
+      document.querySelectorAll(".sim-tab-btn").forEach(btn => {
+        if (btn.getAttribute("data-sim") === simKey) {
+          btn.className = "sim-tab-btn px-3 py-2 rounded-lg bg-white dark:bg-stone-900 shadow-sm font-medium text-stone-900 dark:text-stone-100 transition";
+        } else {
+          btn.className = "sim-tab-btn px-3 py-2 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition";
+        }
+      });
+    }
+
+    // ============================================================================
+    // CMS STUDIO DRAWER LOGIC (ADD / EDIT / DELETE JOURNEY & SKILLS)
+    // ============================================================================
+    function openCmsDrawer(tabKey) {
+      document.getElementById("cms-drawer-backdrop").classList.remove("hidden");
+      if (tabKey) switchCmsTab(tabKey);
+      populateProfileForm();
+      renderCmsLists();
+    }
+
+    function closeCmsDrawer() {
+      document.getElementById("cms-drawer-backdrop").classList.add("hidden");
+    }
+
+    function switchCmsTab(tabKey) {
+      document.querySelectorAll(".cms-panel").forEach(p => p.classList.add("hidden"));
+      const target = document.getElementById("cms-panel-" + tabKey);
+      if (target) target.classList.remove("hidden");
+
+      document.querySelectorAll(".cms-tab-btn").forEach(btn => {
+        if (btn.getAttribute("data-cmstab") === tabKey) {
+          btn.className = "cms-tab-btn px-3 py-1.5 rounded-lg bg-white dark:bg-stone-900 font-medium shadow-sm";
+        } else {
+          btn.className = "cms-tab-btn px-3 py-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:hover:text-white";
+        }
+      });
+    }
+
+    function populateProfileForm() {
+      const p = portfolioData.profile;
+      document.getElementById("prof-name").value = p.name || "";
+      document.getElementById("prof-cgpa").value = p.cgpa || "";
+      document.getElementById("prof-avail").value = p.availability || "";
+      document.getElementById("prof-bio").value = p.bio || "";
+    }
+
+    function renderCmsLists() {
+      // Experience list inside CMS
+      const expList = document.getElementById("cms-exp-manage-list");
+      expList.innerHTML = portfolioData.experience.map(e => `
+        <div class="p-3 rounded-lg surface-card flex items-center justify-between gap-2 text-xs">
+          <div>
+            <span class="font-semibold">${escapeHtml(e.role)}</span> · <span class="text-stone-500">${escapeHtml(e.company)}</span>
+            <div class="font-mono text-[10px] text-stone-400">${escapeHtml(e.period)}</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" data-edit-exp="${escapeHtml(e.id)}" class="px-2 py-1 rounded surface-subtle font-mono text-[11px] hover:bg-amber-500/20">Edit</button>
+            <button type="button" data-del-exp="${escapeHtml(e.id)}" class="px-2 py-1 rounded surface-subtle font-mono text-[11px] text-red-600 hover:bg-red-500/10">Delete</button>
+          </div>
+        </div>
+      `).join("");
+
+      expList.querySelectorAll("[data-edit-exp]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-edit-exp");
+          const item = portfolioData.experience.find(x => x.id === id);
+          if (!item) return;
+          document.getElementById("exp-edit-id").value = item.id;
+          document.getElementById("exp-company").value = item.company;
+          document.getElementById("exp-role").value = item.role;
+          document.getElementById("exp-period").value = item.period;
+          document.getElementById("exp-location").value = item.location;
+          document.getElementById("exp-lens").value = item.lens || "industrial";
+          document.getElementById("exp-metric").value = item.metricBadge || "";
+          document.getElementById("exp-bullets").value = (item.bullets || []).join("\n");
+          document.getElementById("exp-tags").value = (item.tags || []).join(", ");
+          document.getElementById("exp-form-heading").textContent = "Editing: " + item.company;
+          document.getElementById("cancel-exp-edit-btn").classList.remove("hidden");
+        });
+      });
+
+      expList.querySelectorAll("[data-del-exp]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del-exp");
+          portfolioData.experience = portfolioData.experience.filter(x => x.id !== id);
+          savePortfolioData();
+          renderAll();
+          showToast("Experience entry removed");
+        });
+      });
+
+      // Projects list inside CMS
+      const projList = document.getElementById("cms-proj-manage-list");
+      projList.innerHTML = portfolioData.projects.map(p => `
+        <div class="p-3 rounded-lg surface-card flex items-center justify-between gap-2 text-xs">
+          <div>
+            <span class="font-semibold">${escapeHtml(p.title)}</span>
+            <div class="font-mono text-[10px] text-stone-400">${escapeHtml(p.subtitle)}</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" data-edit-proj="${escapeHtml(p.id)}" class="px-2 py-1 rounded surface-subtle font-mono text-[11px] hover:bg-amber-500/20">Edit</button>
+            <button type="button" data-del-proj="${escapeHtml(p.id)}" class="px-2 py-1 rounded surface-subtle font-mono text-[11px] text-red-600 hover:bg-red-500/10">Delete</button>
+          </div>
+        </div>
+      `).join("");
+
+      projList.querySelectorAll("[data-edit-proj]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-edit-proj");
+          const item = portfolioData.projects.find(x => x.id === id);
+          if (!item) return;
+          document.getElementById("proj-edit-id").value = item.id;
+          document.getElementById("proj-title").value = item.title;
+          document.getElementById("proj-subtitle").value = item.subtitle;
+          document.getElementById("proj-lens").value = item.lens || "embedded";
+          document.getElementById("proj-flow").value = item.flow || "";
+          document.getElementById("proj-bullets").value = (item.bullets || []).join("\n");
+          document.getElementById("proj-tags").value = (item.tags || []).join(", ");
+          document.getElementById("proj-link").value = item.link || "";
+          document.getElementById("proj-form-heading").textContent = "Editing: " + item.title;
+          document.getElementById("cancel-proj-edit-btn").classList.remove("hidden");
+        });
+      });
+
+      projList.querySelectorAll("[data-del-proj]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del-proj");
+          portfolioData.projects = portfolioData.projects.filter(x => x.id !== id);
+          savePortfolioData();
+          renderAll();
+          showToast("Project removed");
+        });
+      });
+
+      // Skills manage pills
+      const skillsManage = document.getElementById("cms-skills-manage-list");
+      const allSkillItems = [];
+      ["software", "core", "soft"].forEach(cat => {
+        (portfolioData.skills[cat] || []).forEach(s => {
+          allSkillItems.push({ cat, name: s });
+        });
+      });
+      skillsManage.innerHTML = allSkillItems.map(item => `
+        <button type="button" data-del-skill-cat="${item.cat}" data-del-skill-name="${escapeHtml(item.name)}" class="px-2.5 py-1 rounded-lg text-xs font-mono surface-card hover:bg-red-500/10 hover:text-red-500 transition">
+          ${escapeHtml(item.name)} ✕
+        </button>
+      `).join("");
+
+      skillsManage.querySelectorAll("[data-del-skill-name]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cat = btn.getAttribute("data-del-skill-cat");
+          const name = btn.getAttribute("data-del-skill-name");
+          portfolioData.skills[cat] = (portfolioData.skills[cat] || []).filter(s => s !== name);
+          savePortfolioData();
+          renderAll();
+          showToast("Removed skill: " + name);
+        });
+      });
+
+      // Certs manage list
+      const certsManage = document.getElementById("cms-certs-manage-list");
+      certsManage.innerHTML = portfolioData.certifications.map(c => `
+        <div class="p-2.5 rounded-lg surface-card flex items-center justify-between text-xs">
+          <span><strong>${escapeHtml(c.title)}</strong> — ${escapeHtml(c.issuer)}</span>
+          <button type="button" data-del-cert="${escapeHtml(c.id)}" class="px-2 py-0.5 rounded font-mono text-[11px] text-red-600 hover:bg-red-500/10">Remove</button>
+        </div>
+      `).join("");
+
+      certsManage.querySelectorAll("[data-del-cert]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del-cert");
+          portfolioData.certifications = portfolioData.certifications.filter(c => c.id !== id);
+          savePortfolioData();
+          renderAll();
+          showToast("Credential removed");
+        });
+      });
+    }
+
+    // Export standalone HTML with updated portfolioData baked in
+    function exportUpdatedHtmlFile() {
+      const currentDocHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const updatedJson = JSON.stringify(portfolioData, null, 2);
+      const replaced = currentDocHtml.replace(
+        /\/\*__PORTFOLIO_DATA_START__\*\/[\s\S]*?\/\*__PORTFOLIO_DATA_END__\*\//,
+        "/*__PORTFOLIO_DATA_START__*/ " + updatedJson + " /*__PORTFOLIO_DATA_END__*/"
+      );
+      const blob = new Blob([replaced], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "saurabh_kumar_portfolio.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Downloaded updated saurabh_kumar_portfolio.html");
+    }
+
+    // ============================================================================
+    // EVENT LISTENERS & INITIALIZATION
+    // ============================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSavedData();
+      renderAll();
+      updateHydroSim();
+      renderEvSimulator();
+      renderPlcSimulator();
+
+      // Live IST Telemetry Clock
+      function updateClock() {
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
+        const hh = String(istTime.getHours()).padStart(2, "0");
+        const mm = String(istTime.getMinutes()).padStart(2, "0");
+        const ss = String(istTime.getSeconds()).padStart(2, "0");
+        const el = document.getElementById("telemetry-clock");
+        if (el) el.textContent = `IST ${hh}:${mm}:${ss}:00`;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // Smooth Section Navigation
+      document.querySelectorAll(".nav-scroll-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.getAttribute("data-scroll");
+          const el = document.getElementById(targetId);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        });
+      });
+
+      document.getElementById("brand-home-btn").addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // Theme Toggle
+      document.getElementById("theme-toggle-btn").addEventListener("click", () => {
+        document.documentElement.classList.toggle("dark");
+        const isDark = document.documentElement.classList.contains("dark");
+        showToast(isDark ? "Switched to Precision Dark Theme" : "Switched to Editorial Ivory Theme");
+      });
+
+      // Practice Lens Switcher
+      const lensMeta = {
+        all: {
+          label: "Showing: All Practices (Unified Proof of Work)",
+          kicker: "THREE PRACTICES · ONE ENGINEER — PICK A LENS & THE SITE CUTS TO IT"
+        },
+        industrial: {
+          label: "Showing: 01 Industrial PLC Automation & 400kV Power Systems",
+          kicker: "LENS 01 // INDUSTRIAL AUTOMATION (MARUTI SUZUKI) & 400kV EHV SUBSTATION (UPPTCL)"
+        },
+        embedded: {
+          label: "Showing: 02 Embedded IoT (ESP32) & Clean EV Energy Architecture",
+          kicker: "LENS 02 // EMBEDDED ESP32 AUTOMATION, BLYNK TELEMETRY & SOLAR-EV V2G"
+        },
+        content: {
+          label: "Showing: 03 Technical & Finance Storytelling (200 → 100K+ Subs)",
+          kicker: "LENS 03 // HIGH-RETENTION TECHNICAL & FINANCE CONTENT (4M+ VIEWS)"
+        }
+      };
+
+      document.querySelectorAll(".lens-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeLens = btn.getAttribute("data-lens") || "all";
+          document.querySelectorAll(".lens-btn").forEach(b => {
+            if (b.getAttribute("data-lens") === activeLens) {
+              b.className = "lens-btn text-left p-4 rounded-xl surface-card ring-2 ring-amber-500/80 transition";
+            } else {
+              b.className = "lens-btn text-left p-4 rounded-xl surface-card hover:border-stone-400 transition";
+            }
+          });
+          document.getElementById("lens-status-label").textContent = lensMeta[activeLens].label;
+          document.getElementById("active-lens-kicker").textContent = lensMeta[activeLens].kicker;
+          renderMetrics();
+          renderExperience();
+          renderProjects();
+          showToast(lensMeta[activeLens].label);
+        });
+      });
+
+      // Copy Phone Button
+      document.getElementById("copy-phone-btn").addEventListener("click", () => {
+        const text = portfolioData.profile.phone;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(() => {});
+        }
+        showToast("Copied phone: " + text);
+      });
+
+      // Hydroponics Simulator Sliders
+      ["sim-temp", "sim-moisture", "sim-light", "sim-humidity"].forEach(id => {
+        document.getElementById(id).addEventListener("input", () => {
+          hydroManualOverride = false;
+          document.getElementById("hydro-override-btn").textContent = "Mode: AUTO THRESHOLD";
+          updateHydroSim();
+        });
+      });
+
+      document.getElementById("toggle-aqi-btn").addEventListener("click", () => {
+        hydroAqiHigh = !hydroAqiHigh;
+        hydroManualOverride = false;
+        updateHydroSim();
+      });
+
+      document.getElementById("hydro-preset-btn").addEventListener("click", () => {
+        document.getElementById("sim-temp").value = 33;
+        document.getElementById("sim-moisture").value = 28;
+        document.getElementById("sim-light").value = 210;
+        document.getElementById("sim-humidity").value = 38;
+        hydroAqiHigh = true;
+        hydroManualOverride = false;
+        updateHydroSim();
+        showToast("Simulated hot/dry environment → All 4 ESP32 relays energized");
+      });
+
+      document.getElementById("hydro-override-btn").addEventListener("click", () => {
+        hydroManualOverride = !hydroManualOverride;
+        document.getElementById("hydro-override-btn").textContent = hydroManualOverride
+          ? "Mode: BLYNK MANUAL OVERRIDE"
+          : "Mode: AUTO THRESHOLD";
+        updateHydroSim();
+      });
+
+      // Lab Tab Switcher
+      document.querySelectorAll(".sim-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          switchSimulatorTab(btn.getAttribute("data-sim"));
+        });
+      });
+
+      // Solar-EV Mode Switcher
+      document.querySelectorAll(".ev-mode-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          evOperatingMode = btn.getAttribute("data-evmode");
+          document.querySelectorAll(".ev-mode-btn").forEach(b => {
+            if (b.getAttribute("data-evmode") === evOperatingMode) {
+              b.className = "ev-mode-btn px-2.5 py-1 rounded bg-white dark:bg-stone-900 font-medium shadow-sm";
+            } else {
+              b.className = "ev-mode-btn px-2.5 py-1 rounded text-stone-500 hover:text-stone-900 dark:hover:text-white";
+            }
+          });
+          renderEvSimulator();
+        });
+      });
+
+      // PLC Input Buttons
+      document.querySelectorAll(".plc-input-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.getAttribute("data-plc");
+          plcState[key] = !plcState[key];
+          renderPlcSimulator();
+        });
+      });
+
+      // Proof Modal Close
+      document.getElementById("close-proof-modal").addEventListener("click", () => {
+        document.getElementById("proof-modal").classList.add("hidden");
+      });
+
+      // CMS Studio Open / Close
+      document.getElementById("open-cms-btn").addEventListener("click", () => openCmsDrawer("exp"));
+      document.getElementById("hero-add-journey-btn").addEventListener("click", () => openCmsDrawer("exp"));
+      document.getElementById("add-exp-QuickBtn").addEventListener("click", () => openCmsDrawer("exp"));
+      document.getElementById("add-proj-QuickBtn").addEventListener("click", () => openCmsDrawer("proj"));
+      document.getElementById("add-skill-QuickBtn").addEventListener("click", () => openCmsDrawer("skill"));
+      document.getElementById("footer-cms-btn").addEventListener("click", () => openCmsDrawer("exp"));
+      document.getElementById("close-cms-btn").addEventListener("click", closeCmsDrawer);
+
+      document.querySelectorAll(".cms-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => switchCmsTab(btn.getAttribute("data-cmstab")));
+      });
+
+      // Save Experience in CMS
+      document.getElementById("save-exp-btn").addEventListener("click", () => {
+        const company = document.getElementById("exp-company").value.trim();
+        const role = document.getElementById("exp-role").value.trim();
+        const period = document.getElementById("exp-period").value.trim();
+        const location = document.getElementById("exp-location").value.trim() || "India";
+        const lens = document.getElementById("exp-lens").value;
+        const metricBadge = document.getElementById("exp-metric").value.trim();
+        const bulletsRaw = document.getElementById("exp-bullets").value.trim();
+        const tagsRaw = document.getElementById("exp-tags").value.trim();
+        const editId = document.getElementById("exp-edit-id").value;
+
+        if (!company || !role || !bulletsRaw) {
+          showToast("Please fill in Company, Role, and Key Contributions");
+          return;
+        }
+
+        const bullets = bulletsRaw.split("\n").map(s => s.trim()).filter(Boolean);
+        const tags = tagsRaw ? tagsRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+        const lensLabels = {
+          industrial: "Industrial & Power Systems",
+          embedded: "Embedded IoT & Clean Tech",
+          content: "Technical & Finance Storytelling"
+        };
+
+        if (editId) {
+          const idx = portfolioData.experience.findIndex(x => x.id === editId);
+          if (idx !== -1) {
+            portfolioData.experience[idx] = {
+              ...portfolioData.experience[idx],
+              company, role, period, location, lens,
+              lensLabel: lensLabels[lens],
+              metricBadge, bullets, tags
+            };
+          }
+        } else {
+          portfolioData.experience.unshift({
+            id: "exp-" + Date.now(),
+            company, role, period: period || "2026", location, lens,
+            lensLabel: lensLabels[lens],
+            metricBadge, bullets, tags,
+            proofArchitecture: ""
+          });
+        }
+
+        document.getElementById("exp-edit-id").value = "";
+        document.getElementById("exp-company").value = "";
+        document.getElementById("exp-role").value = "";
+        document.getElementById("exp-period").value = "";
+        document.getElementById("exp-location").value = "";
+        document.getElementById("exp-metric").value = "";
+        document.getElementById("exp-bullets").value = "";
+        document.getElementById("exp-tags").value = "";
+        document.getElementById("exp-form-heading").textContent = "Add New Experience / Internship";
+        document.getElementById("cancel-exp-edit-btn").classList.add("hidden");
+
+        savePortfolioData();
+        renderAll();
+        showToast("Saved experience milestone to portfolio");
+      });
+
+      document.getElementById("cancel-exp-edit-btn").addEventListener("click", () => {
+        document.getElementById("exp-edit-id").value = "";
+        document.getElementById("exp-company").value = "";
+        document.getElementById("exp-role").value = "";
+        document.getElementById("exp-period").value = "";
+        document.getElementById("exp-location").value = "";
+        document.getElementById("exp-metric").value = "";
+        document.getElementById("exp-bullets").value = "";
+        document.getElementById("exp-tags").value = "";
+        document.getElementById("exp-form-heading").textContent = "Add New Experience / Internship";
+        document.getElementById("cancel-exp-edit-btn").classList.add("hidden");
+      });
+
+      // Save Project in CMS
+      document.getElementById("save-proj-btn").addEventListener("click", () => {
+        const title = document.getElementById("proj-title").value.trim();
+        const subtitle = document.getElementById("proj-subtitle").value.trim();
+        const lens = document.getElementById("proj-lens").value;
+        const flow = document.getElementById("proj-flow").value.trim();
+        const bulletsRaw = document.getElementById("proj-bullets").value.trim();
+        const tagsRaw = document.getElementById("proj-tags").value.trim();
+        const link = document.getElementById("proj-link").value.trim();
+        const editId = document.getElementById("proj-edit-id").value;
+
+        if (!title || !bulletsRaw) {
+          showToast("Please provide Project Title and Proof Bullets");
+          return;
+        }
+
+        const bullets = bulletsRaw.split("\n").map(s => s.trim()).filter(Boolean);
+        const tags = tagsRaw ? tagsRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+
+        if (editId) {
+          const idx = portfolioData.projects.findIndex(x => x.id === editId);
+          if (idx !== -1) {
+            portfolioData.projects[idx] = {
+              ...portfolioData.projects[idx],
+              title, subtitle, lens, flow, bullets, tags, link
+            };
+          }
+        } else {
+          portfolioData.projects.unshift({
+            id: "proj-" + Date.now(),
+            title,
+            subtitle: subtitle || "Engineering Proof of Work",
+            lens,
+            badge: lens === "industrial" ? "Industrial Systems" : "Embedded & Clean Energy",
+            flow,
+            bullets,
+            tags,
+            link
+          });
+        }
+
+        document.getElementById("proj-edit-id").value = "";
+        document.getElementById("proj-title").value = "";
+        document.getElementById("proj-subtitle").value = "";
+        document.getElementById("proj-flow").value = "";
+        document.getElementById("proj-bullets").value = "";
+        document.getElementById("proj-tags").value = "";
+        document.getElementById("proj-link").value = "";
+        document.getElementById("proj-form-heading").textContent = "Add New Engineering Project";
+        document.getElementById("cancel-proj-edit-btn").classList.add("hidden");
+
+        savePortfolioData();
+        renderAll();
+        showToast("Project saved to portfolio");
+      });
+
+      document.getElementById("cancel-proj-edit-btn").addEventListener("click", () => {
+        document.getElementById("proj-edit-id").value = "";
+        document.getElementById("proj-title").value = "";
+        document.getElementById("proj-subtitle").value = "";
+        document.getElementById("proj-flow").value = "";
+        document.getElementById("proj-bullets").value = "";
+        document.getElementById("proj-tags").value = "";
+        document.getElementById("proj-link").value = "";
+        document.getElementById("proj-form-heading").textContent = "Add New Engineering Project";
+        document.getElementById("cancel-proj-edit-btn").classList.add("hidden");
+      });
+
+      // Save Skill in CMS
+      document.getElementById("save-skill-btn").addEventListener("click", () => {
+        const name = document.getElementById("skill-name").value.trim();
+        const cat = document.getElementById("skill-category").value;
+        if (!name) {
+          showToast("Enter a skill name first");
+          return;
+        }
+        if (!portfolioData.skills[cat].includes(name)) {
+          portfolioData.skills[cat].push(name);
+          savePortfolioData();
+          renderAll();
+          showToast("Added skill: " + name);
+        }
+        document.getElementById("skill-name").value = "";
+      });
+
+      // Save Certification in CMS
+      document.getElementById("save-cert-btn").addEventListener("click", () => {
+        const title = document.getElementById("cert-title").value.trim();
+        const issuer = document.getElementById("cert-issuer").value.trim();
+        const badge = document.getElementById("cert-badge").value.trim() || "Verified";
+        const url = document.getElementById("cert-url").value.trim();
+        if (!title || !issuer) {
+          showToast("Please provide Title and Issuing Organization");
+          return;
+        }
+        portfolioData.certifications.unshift({
+          id: "cert-" + Date.now(),
+          title, issuer, badge, url
+        });
+        document.getElementById("cert-title").value = "";
+        document.getElementById("cert-issuer").value = "";
+        document.getElementById("cert-badge").value = "";
+        document.getElementById("cert-url").value = "";
+        savePortfolioData();
+        renderAll();
+        showToast("Added credential: " + title);
+      });
+
+      // Save Profile Info
+      document.getElementById("save-profile-btn").addEventListener("click", () => {
+        portfolioData.profile.name = document.getElementById("prof-name").value.trim() || "Saurabh Kumar";
+        portfolioData.profile.cgpa = document.getElementById("prof-cgpa").value.trim() || "7.01";
+        portfolioData.profile.availability = document.getElementById("prof-avail").value.trim();
+        portfolioData.profile.bio = document.getElementById("prof-bio").value.trim();
+        savePortfolioData();
+        renderAll();
+        showToast("Profile updated");
+      });
+
+      // Export Standalone HTML & JSON
+      document.getElementById("export-standalone-html-btn").addEventListener("click", exportUpdatedHtmlFile);
+      document.getElementById("export-html-footer-btn").addEventListener("click", exportUpdatedHtmlFile);
+
+      document.getElementById("export-json-btn").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(portfolioData, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "saurabh_portfolio_data.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Exported portfolio JSON backup");
+      });
+
+      document.getElementById("import-json-input").addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(reader.result);
+            if (parsed && parsed.profile && Array.isArray(parsed.experience)) {
+              portfolioData = parsed;
+              savePortfolioData();
+              renderAll();
+              showToast("Imported portfolio data successfully");
+            }
+          } catch (err) {
+            showToast("Invalid JSON file");
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById("reset-default-data-btn").addEventListener("click", () => {
+        portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO_DATA));
+        savePortfolioData();
+        renderAll();
+        showToast("Reset portfolio to original resume data");
+      });
+
+      // Contact Quick Note Mailto & Copy
+      document.getElementById("send-mailto-btn").addEventListener("click", () => {
+        const subj = document.getElementById("quick-role-input").value.trim() || "Opportunity Inquiry via Portfolio";
+        const body = document.getElementById("quick-msg-input").value.trim() || "Hi Saurabh, I reviewed your portfolio and would like to connect.";
+        window.location.href = `mailto:${portfolioData.profile.emailPersonal}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+      });
+
+      document.getElementById("copy-contact-summary-btn").addEventListener("click", () => {
+        const p = portfolioData.profile;
+        const summary = `${p.name} | ${p.degree} (${p.university}) | Phone: ${p.phone} | Email: ${p.emailPersonal} | LinkedIn: ${p.linkedin}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(summary).catch(() => {});
+        }
+        showToast("Copied contact summary to clipboard");
+      });
+
+      // Keyboard Shortcuts (ESC closes modals)
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          document.getElementById("proof-modal").classList.add("hidden");
+          closeCmsDrawer();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
